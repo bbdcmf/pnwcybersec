@@ -7,7 +7,7 @@ For GPU support see: https://pytorch.org/get-started/locally/
 
 **Functions:**
 
-**1. convertToImage(src, dst)**
+1. **convertToImage(src, dst)**
      - Description:
        - Converts executable files to images.
 	Input:

@@ -63,7 +63,7 @@ For GPU support see: https://pytorch.org/get-started/locally/
 ```			
 
 ```			
-	def getBestModel(cpu=False)
+	getBestModel(cpu=False)
 		Description: 
 			Loads our most accurate model that was trained to detect malware
 		Input:

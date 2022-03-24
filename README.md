@@ -93,5 +93,5 @@ predict(model, testPath, threshold=None, labeled=False)
 		model: The trained model used to predict the samples
 		testPath: The path to the directory containing the test set
 		threshold: The probability threshold for when a prediction should not be trusted. Any prediction's probability below the threshold will be flipped and flagged
-		labeled: Whether or not the test samples' labels can be extracted from the name of the directory they are stored in. If labeled, then this function will print the accuracy of all of its predictions for the test set.
+		labeled: Whether or not the test samples' labels can be extracted from the name of the directory they are stored in. If labeled, then this function will print the accuracy of all of its predictions for the test set. Expected labels are: ['malware', 'goodware']
 ```

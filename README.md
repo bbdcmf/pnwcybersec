@@ -6,16 +6,15 @@ For GPU support see: https://pytorch.org/get-started/locally/
 ## Module Documentation
 
 **Functions:**
-```
-convertToImage(src, dst)
+
+**convertToImage(src, dst)**
 	Description:
 		Converts executable files to images.
 	Input:
 		src: The source path to the directory containing the executables that will be converted to images.
 		dst: The destination path to the directory where the image(s) will be saved to.
 	Output:
-		Converted executable image file(s)
-```			
+		Converted executable image file(s)			
 
 ```			
 loadData(trainPath, valid_pct, bs=None, get_items=get_image_files, get_y=parent_label, item_tfms=Resize(224, ResizeMethod.Pad, pad_mode='zeros'), batch_tfms=aug_transforms())

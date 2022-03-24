@@ -3,7 +3,7 @@ https://pypi.org/project/pnwcybersec/
 
 For GPU support see: https://pytorch.org/get-started/locally/
 
-## pnwcybersec Module Documentation
+## Module Documentation
 
 **Functions:**
 ```

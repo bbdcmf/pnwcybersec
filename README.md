@@ -28,67 +28,49 @@ For GPU support see: https://pytorch.org/get-started/locally/
        - batch_tfms: Transforms that will be done to each sample in a batch. Default=aug_transforms(), which is a utility function to easily create a list of flip, rotate, zoom, warp, and lighting transforms.
      - Output:
        - dls: A fast.ai DataLoaders object.		
-
-```			
-trainModel(dls, arch, path, epoch_ct=1, base_lr=None, metrics=error_rate, pretrained=True)
-	Description:
-		Creates and trains the CNN model.
-	Input:
-		dls: A DataLoaders object.
-		arch: The architecture that the model will use to train.
-		path: The path to where the exported model will be saved. Must specifiy the fileName.pkl.
-		epoch_ct: The number of iterations. Default=1.
-		base_lr: The base learning rate. Default=None.
-		metrics: The metrics used to determine how well the model is training. Default=error_rate.
-		pretrained: Whether or not to use a pretrained model. False=Create model from scratch. Default=True.
-	Output:
-		model: The trained model
-```			
-
-```			
-loadModel(exportPath, cpu=False)
-	Description:
-		Load an exported trained model
-	Input:
-		exportPath: The path to the exported model
-		cpu: Whether or not the model should only use a cpu. False=The model will use a GPU
-	Output:
-		model: The trained model
-```			
-
-```			
-getBestModel(cpu=False)
-	Description: 
-		Loads our most accurate model that was trained to detect malware
-	Input:
-		cpu: Whether or not the model should only use a cpu. False=The model will use a GPU
-	Output:
-		model: The trained model
-```			
-
-```			
-showImages(item)
-	Description:
-		Displays the specified image file
-	Input:
-		item: The image file you want displayed
-```			
-
-```		
-confusionMatrix(model)
-	Description:
-		Displays a confusion matrix for the specified model
-	Input:
-		model: The trained model
-```			
-
-```			
-predict(model, testPath, threshold=None, labeled=False)
-	Description:
-		Prints the prediction and probability of that prediction, for each sample specified. 
-	Input:
-		model: The trained model used to predict the samples
-		testPath: The path to the directory containing the test set
-		threshold: The probability threshold for when a prediction should not be trusted. Any prediction's probability below the threshold will be flipped and flagged
-		labeled: Whether or not the test samples' labels can be extracted from the name of the directory they are stored in. If labeled, then this function will print the accuracy of all of its predictions for the test set. Expected labels are: ['malware', 'goodware']
-```
+3. **trainModel(dls, arch, path, epoch_ct=1, base_lr=None, metrics=error_rate, pretrained=True)**
+     - Description:
+       - Creates and trains the CNN model.
+     - Input:
+       - dls: A DataLoaders object.
+       - arch: The architecture that the model will use to train.
+       - path: The path to where the exported model will be saved. Must specifiy the fileName.pkl.
+       - epoch_ct: The number of iterations. Default=1.
+       - base_lr: The base learning rate. Default=None.
+       - metrics: The metrics used to determine how well the model is training. Default=error_rate.
+       - pretrained: Whether or not to use a pretrained model. False=Create model from scratch. Default=True.
+     - Output:
+       - model: The trained model		
+4. **loadModel(exportPath, cpu=False)**
+     - Description:
+       - Load an exported trained model
+     - Input:
+       - exportPath: The path to the exported model
+       - cpu: Whether or not the model should only use a cpu. False=The model will use a GPU
+     - Output:
+       - model: The trained model		
+5. **getBestModel(cpu=False)**
+     - Description: 
+       - Loads our most accurate model that was trained to detect malware
+     - Input:
+       - cpu: Whether or not the model should only use a cpu. False=The model will use a GPU
+     - Output:
+       - model: The trained model			
+6. **showImages(item)**
+     - Description:
+       - Displays the specified image file
+     - Input:
+       - item: The image file you want displayed		
+7. **confusionMatrix(model)**
+     - Description:
+       - Displays a confusion matrix for the specified model
+     - Input:
+       - model: The trained model		
+8. **predict(model, testPath, threshold=None, labeled=False)**
+     - Description:
+       - Prints the prediction and probability of that prediction, for each sample specified. 
+     - Input:
+       - model: The trained model used to predict the samples
+       - testPath: The path to the directory containing the test set
+       - threshold: The probability threshold for when a prediction should not be trusted. Any prediction's probability below the threshold will be flipped and flagged
+       - labeled: Whether or not the test samples' labels can be extracted from the name of the directory they are stored in. If labeled, then this function will print the accuracy of all of its predictions for the test set. Expected labels are: ['malware', 'goodware']

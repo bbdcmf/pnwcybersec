@@ -28,7 +28,7 @@ For GPU support see: https://pytorch.org/get-started/locally/
           batch_tfms: Transforms that will be done to each sample in a batch. Default=aug_transforms(), which is a utility function to easily create a list of flip, rotate, zoom, warp, and lighting transforms.
      Output:
           dls: A fast.ai DataLoaders object.		
-#### **trainModel(dls, arch, path, epoch_ct=1, base_lr=None, metrics=error_rate, pretrained=True)**
+#### **trainModel(dls, arch, path, epoch_ct=1, metrics=error_rate, pretrained=True)**
      Description:
           Creates and trains the CNN model.
      Input:
@@ -36,7 +36,6 @@ For GPU support see: https://pytorch.org/get-started/locally/
           arch: The architecture that the model will use to train.
           path: The path to where the exported model will be saved. Must specifiy the fileName.pkl.
           epoch_ct: The number of iterations. Default=1.
-          base_lr: The base learning rate. Default=None.
           metrics: The metrics used to determine how well the model is training. Default=error_rate.
           pretrained: Whether or not to use a pretrained model. False=Create model from scratch. Default=True.
      Output:

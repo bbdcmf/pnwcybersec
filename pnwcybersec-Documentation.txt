@@ -27,7 +27,7 @@ Functions:
 			item_tfms: Transforms that will be done to each image sample. Default=Resize(224, ResizeMethod.Pad, pad_mode='zeros'), which will resize the image so that the shorter dimension is matched to the image size of 224 and then padded with zeros. Helps to ensure data is not lost.
 			batch_tfms: Transforms that will be done to each sample in a batch. Default=aug_transforms(), which is a utility function to easily create a list of flip, rotate, zoom, warp, and lighting transforms.
 		Output:
-			dls: A DataLoaders object.
+			dls: A fast.ai DataLoaders object.
 			
 	----------------------------------------------------------------------------------------------------
 			
@@ -52,7 +52,17 @@ Functions:
 			Load an exported trained model
 		Input:
 			exportPath: The path to the exported model
-			cpu: Whether the model use only a cpu. False=The model will use a GPU
+			cpu: Whether or not the model should only use a cpu. False=The model will use a GPU
+		Output:
+			model: The trained model
+			
+	----------------------------------------------------------------------------------------------------
+			
+	def getBestModel(cpu=False)
+		Description: 
+			Loads our most accurate model that was trained to detect malware
+		Input:
+			cpu: Whether or not the model should only use a cpu. False=The model will use a GPU
 		Output:
 			model: The trained model
 			

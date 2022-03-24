@@ -58,6 +58,12 @@ def loadModel(exportPath, cpu=False):
     model = load_learner(exportPath, cpu)
     return model
 
+def getBestModel(cpu=False):
+    this_dir, this_filename = os.path.split(__file__)
+    modelPath = os.path.join(this_dir, 'bestModel.pkl')
+    model = load_learner(modelPath, cpu)
+    return model
+
 # item = the specific image you want to show
 def showImages(item):
     # Show the images that are being predicted

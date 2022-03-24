@@ -28,7 +28,8 @@ trainPath = path+'dataset/train2/'
 
 ##################################***Loading a PreTrained Model***##################################
 #
-model = ic.loadModel(exportPath, cpu=False)
+#model = ic.loadModel(exportPath, cpu=True)
+model = ic.getBestModel(cpu=False)
 #
 ####################################################################################################
 

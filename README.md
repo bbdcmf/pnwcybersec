@@ -7,7 +7,7 @@ For GPU support see: https://pytorch.org/get-started/locally/
 
 ### **Functions:**
 
-1. **convertToImage(src, dst)**
+#### **convertToImage(src, dst)**
      - Description:
        - Converts executable files to images.
      - Input:
@@ -15,7 +15,7 @@ For GPU support see: https://pytorch.org/get-started/locally/
        - dst: The destination path to the directory where the image(s) will be saved to.
      - Output:
        - Converted executable image file(s)						
-2. **loadData(trainPath, valid_pct, bs=None, get_items=get_image_files, get_y=parent_label, item_tfms=Resize(224, ResizeMethod.Pad, pad_mode='zeros'), batch_tfms=aug_transforms())**
+#### **loadData(trainPath, valid_pct, bs=None, get_items=get_image_files, get_y=parent_label, item_tfms=Resize(224, ResizeMethod.Pad, pad_mode='zeros'), batch_tfms=aug_transforms())**
      - Description:
        - Loads all of the data that will be used for the CNN model.
      - Input:
@@ -28,7 +28,7 @@ For GPU support see: https://pytorch.org/get-started/locally/
        - batch_tfms: Transforms that will be done to each sample in a batch. Default=aug_transforms(), which is a utility function to easily create a list of flip, rotate, zoom, warp, and lighting transforms.
      - Output:
        - dls: A fast.ai DataLoaders object.		
-3. **trainModel(dls, arch, path, epoch_ct=1, base_lr=None, metrics=error_rate, pretrained=True)**
+#### **trainModel(dls, arch, path, epoch_ct=1, base_lr=None, metrics=error_rate, pretrained=True)**
      - Description:
        - Creates and trains the CNN model.
      - Input:
@@ -41,7 +41,7 @@ For GPU support see: https://pytorch.org/get-started/locally/
        - pretrained: Whether or not to use a pretrained model. False=Create model from scratch. Default=True.
      - Output:
        - model: The trained model		
-4. **loadModel(exportPath, cpu=False)**
+#### **loadModel(exportPath, cpu=False)**
      - Description:
        - Load an exported trained model
      - Input:
@@ -49,24 +49,24 @@ For GPU support see: https://pytorch.org/get-started/locally/
        - cpu: Whether or not the model should only use a cpu. False=The model will use a GPU
      - Output:
        - model: The trained model		
-5. **getBestModel(cpu=False)**
+#### **getBestModel(cpu=False)**
      - Description: 
        - Loads our most accurate model that was trained to detect malware
      - Input:
        - cpu: Whether or not the model should only use a cpu. False=The model will use a GPU
      - Output:
        - model: The trained model			
-6. **showImages(item)**
+#### **showImages(item)**
      - Description:
        - Displays the specified image file
      - Input:
        - item: The image file you want displayed		
-7. **confusionMatrix(model)**
+#### **confusionMatrix(model)**
      - Description:
        - Displays a confusion matrix for the specified model
      - Input:
        - model: The trained model		
-8. **predict(model, testPath, threshold=None, labeled=False)**
+#### **predict(model, testPath, threshold=None, labeled=False)**
      - Description:
        - Prints the prediction and probability of that prediction, for each sample specified. 
      - Input:

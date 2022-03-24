@@ -10,27 +10,24 @@ For GPU support see: https://pytorch.org/get-started/locally/
 1. **convertToImage(src, dst)**
      - Description:
        - Converts executable files to images.
-	Input:
-		src: The source path to the directory containing the executables that will be converted to images.
-		dst: The destination path to the directory where the image(s) will be saved to.
-	Output:
-		Converted executable image file(s)			
-
-```			
-loadData(trainPath, valid_pct, bs=None, get_items=get_image_files, get_y=parent_label, item_tfms=Resize(224, ResizeMethod.Pad, pad_mode='zeros'), batch_tfms=aug_transforms())
-	Description:
-		Loads all of the data that will be used for the CNN model.
-	Input:
-		trainPath: Directory path containing the train set image file(s).
-		valid_pct: The percent of the train set's files that will be used for the validation set.
-		bs: Batch size, default=None.
-		get_items: The function used to extract the files from the train set, default=get_image_files, which returns the path to all the image files from the specified directory.
-		get_y: The function used to extract the labels for each image sample. Default=parent_label, which returns the name of the folder the sample image file is stored in.
-		item_tfms: Transforms that will be done to each image sample. Default=Resize(224, ResizeMethod.Pad, pad_mode='zeros'), which will resize the image so that the shorter dimension is matched to the image size of 224 and then padded with zeros. Helps to ensure data is not lost.
-		batch_tfms: Transforms that will be done to each sample in a batch. Default=aug_transforms(), which is a utility function to easily create a list of flip, rotate, zoom, warp, and lighting transforms.
-	Output:
-		dls: A fast.ai DataLoaders object.
-```			
+     - Input:
+       - src: The source path to the directory containing the executables that will be converted to images.
+       - dst: The destination path to the directory where the image(s) will be saved to.
+     - Output:
+       - Converted executable image file(s)						
+2. **loadData(trainPath, valid_pct, bs=None, get_items=get_image_files, get_y=parent_label, item_tfms=Resize(224, ResizeMethod.Pad, pad_mode='zeros'), batch_tfms=aug_transforms())**
+     - Description:
+       - Loads all of the data that will be used for the CNN model.
+     - Input:
+       - trainPath: Directory path containing the train set image file(s).
+       - valid_pct: The percent of the train set's files that will be used for the validation set.
+       - bs: Batch size, default=None.
+       - get_items: The function used to extract the files from the train set, default=get_image_files, which returns the path to all the image files from the specified directory.
+       - get_y: The function used to extract the labels for each image sample. Default=parent_label, which returns the name of the folder the sample image file is stored in.
+       - item_tfms: Transforms that will be done to each image sample. Default=Resize(224, ResizeMethod.Pad, pad_mode='zeros'), which will resize the image so that the shorter dimension is matched to the image size of 224 and then padded with zeros. Helps to ensure data is not lost.
+       - batch_tfms: Transforms that will be done to each sample in a batch. Default=aug_transforms(), which is a utility function to easily create a list of flip, rotate, zoom, warp, and lighting transforms.
+     - Output:
+       - dls: A fast.ai DataLoaders object.		
 
 ```			
 trainModel(dls, arch, path, epoch_ct=1, base_lr=None, metrics=error_rate, pretrained=True)

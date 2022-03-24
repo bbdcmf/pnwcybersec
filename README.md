@@ -9,7 +9,7 @@ For GPU support see: https://pytorch.org/get-started/locally/
 
 **Functions:**
 ```
-	**convertToImage(src, dst)**
+	convertToImage(src, dst)
 		Description:
 			Converts executable files to images.
 		Input:
@@ -20,7 +20,7 @@ For GPU support see: https://pytorch.org/get-started/locally/
 ```			
 	----------------------------------------------------------------------------------------------------
 ```			
-	**loadData(trainPath, valid_pct, bs=None, get_items=get_image_files, get_y=parent_label, item_tfms=Resize(224, ResizeMethod.Pad, pad_mode='zeros'), batch_tfms=aug_transforms())**
+	loadData(trainPath, valid_pct, bs=None, get_items=get_image_files, get_y=parent_label, item_tfms=Resize(224, ResizeMethod.Pad, pad_mode='zeros'), batch_tfms=aug_transforms())
 		Description:
 			Loads all of the data that will be used for the CNN model.
 		Input:
@@ -36,7 +36,7 @@ For GPU support see: https://pytorch.org/get-started/locally/
 ```			
 	----------------------------------------------------------------------------------------------------
 ```			
-	**trainModel(dls, arch, path, epoch_ct=1, base_lr=None, metrics=error_rate, pretrained=True)**
+	trainModel(dls, arch, path, epoch_ct=1, base_lr=None, metrics=error_rate, pretrained=True)
 		Description:
 			Creates and trains the CNN model.
 		Input:
@@ -52,7 +52,7 @@ For GPU support see: https://pytorch.org/get-started/locally/
 ```			
 	----------------------------------------------------------------------------------------------------
 ```			
-	**loadModel(exportPath, cpu=False)**
+	loadModel(exportPath, cpu=False)
 		Description:
 			Load an exported trained model
 		Input:
@@ -63,7 +63,7 @@ For GPU support see: https://pytorch.org/get-started/locally/
 ```			
 	----------------------------------------------------------------------------------------------------
 ```			
-	**def getBestModel(cpu=False)**
+	def getBestModel(cpu=False)
 		Description: 
 			Loads our most accurate model that was trained to detect malware
 		Input:
@@ -73,7 +73,7 @@ For GPU support see: https://pytorch.org/get-started/locally/
 ```			
 	----------------------------------------------------------------------------------------------------
 ```			
-	**showImages(item)**
+	showImages(item)
 		Description:
 			Displays the specified image file
 		Input:
@@ -81,7 +81,7 @@ For GPU support see: https://pytorch.org/get-started/locally/
 ```			
 	----------------------------------------------------------------------------------------------------
 ```		
-	**confusionMatrix(model)**
+	confusionMatrix(model)
 		Description:
 			Displays a confusion matrix for the specified model
 		Input:
@@ -89,7 +89,7 @@ For GPU support see: https://pytorch.org/get-started/locally/
 ```			
 	----------------------------------------------------------------------------------------------------
 ```			
-	**predict(model, testPath, threshold=None, labeled=False)**
+	predict(model, testPath, threshold=None, labeled=False)
 		Description:
 			Prints the prediction and probability of that prediction, for each sample specified. 
 		Input:

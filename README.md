@@ -18,7 +18,7 @@ For GPU support see: https://pytorch.org/get-started/locally/
 		Output:
 			Converted executable image file(s)
 ```			
-	----------------------------------------------------------------------------------------------------
+
 ```			
 	loadData(trainPath, valid_pct, bs=None, get_items=get_image_files, get_y=parent_label, item_tfms=Resize(224, ResizeMethod.Pad, pad_mode='zeros'), batch_tfms=aug_transforms())
 		Description:
@@ -34,7 +34,7 @@ For GPU support see: https://pytorch.org/get-started/locally/
 		Output:
 			dls: A fast.ai DataLoaders object.
 ```			
-	----------------------------------------------------------------------------------------------------
+
 ```			
 	trainModel(dls, arch, path, epoch_ct=1, base_lr=None, metrics=error_rate, pretrained=True)
 		Description:
@@ -50,7 +50,7 @@ For GPU support see: https://pytorch.org/get-started/locally/
 		Output:
 			model: The trained model
 ```			
-	----------------------------------------------------------------------------------------------------
+
 ```			
 	loadModel(exportPath, cpu=False)
 		Description:
@@ -61,7 +61,7 @@ For GPU support see: https://pytorch.org/get-started/locally/
 		Output:
 			model: The trained model
 ```			
-	----------------------------------------------------------------------------------------------------
+
 ```			
 	def getBestModel(cpu=False)
 		Description: 
@@ -71,7 +71,7 @@ For GPU support see: https://pytorch.org/get-started/locally/
 		Output:
 			model: The trained model
 ```			
-	----------------------------------------------------------------------------------------------------
+
 ```			
 	showImages(item)
 		Description:
@@ -79,7 +79,7 @@ For GPU support see: https://pytorch.org/get-started/locally/
 		Input:
 			item: The image file you want displayed
 ```			
-	----------------------------------------------------------------------------------------------------
+
 ```		
 	confusionMatrix(model)
 		Description:
@@ -87,7 +87,7 @@ For GPU support see: https://pytorch.org/get-started/locally/
 		Input:
 			model: The trained model
 ```			
-	----------------------------------------------------------------------------------------------------
+
 ```			
 	predict(model, testPath, threshold=None, labeled=False)
 		Description:

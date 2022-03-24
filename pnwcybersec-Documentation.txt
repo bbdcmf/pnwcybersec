@@ -12,6 +12,8 @@ Functions:
 		Output:
 			Converted executable image file(s)
 			
+	----------------------------------------------------------------------------------------------------
+			
 	loadData(trainPath, valid_pct, bs=None, get_items=get_image_files, get_y=parent_label, item_tfms=Resize(224, ResizeMethod.Pad, pad_mode='zeros'), batch_tfms=aug_transforms())
 		Description:
 			Loads all of the data that will be used for the CNN model.
@@ -25,6 +27,8 @@ Functions:
 			batch_tfms: Transforms that will be done to each sample in a batch. Default=aug_transforms(), which is a utility function to easily create a list of flip, rotate, zoom, warp, and lighting transforms.
 		Output:
 			dls: A DataLoaders object.
+			
+	----------------------------------------------------------------------------------------------------
 			
 	trainModel(dls, arch, path, epoch_ct=1, base_lr=None, metrics=error_rate, pretrained=True)
 		Description:
@@ -40,6 +44,8 @@ Functions:
 		Output:
 			model: The trained model
 			
+	----------------------------------------------------------------------------------------------------
+			
 	loadModel(exportPath, cpu=False)
 		Description:
 			Load an exported trained model
@@ -49,17 +55,23 @@ Functions:
 		Output:
 			model: The trained model
 			
+	----------------------------------------------------------------------------------------------------
+			
 	showImages(item)
 		Description:
 			Displays the specified image file
 		Input:
 			item: The image file you want displayed
+			
+	----------------------------------------------------------------------------------------------------
 		
 	confusionMatrix(model)
 		Description:
 			Displays a confusion matrix for the specified model
 		Input:
 			model: The trained model
+			
+	----------------------------------------------------------------------------------------------------
 			
 	predict(model, testPath, threshold=None, labeled=False)
 		Description:

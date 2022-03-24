@@ -5,7 +5,7 @@ For GPU support see: https://pytorch.org/get-started/locally/
 
 ## Module Documentation
 
-**Functions:**
+### **Functions:**
 
 1. **convertToImage(src, dst)**
      - Description:

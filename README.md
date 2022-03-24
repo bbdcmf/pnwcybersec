@@ -32,7 +32,7 @@ For GPU support see: https://pytorch.org/get-started/locally/
      Description:
           Creates and trains the CNN model.
      Input:
-          dls: A DataLoaders object.
+          dls: A fastai DataLoaders object.
           arch: The architecture that the model will use to train.
           path: The path to where the exported model will be saved. Must specifiy the fileName.pkl.
           epoch_ct: The number of iterations. Default=1.

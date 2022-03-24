@@ -1,0 +1,6 @@
+conda create -n its490 python=3.7
+conda activate its490
+conda install -c fastchan fastai
+conda list cudatoolkit
+ - Find the version of cudatoolkit given in output above, here mine is 11.1.1
+conda install pytorch torchvision torchaudio cudatoolkit=11.1.1 -c pytorch

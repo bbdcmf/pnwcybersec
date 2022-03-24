@@ -1,3 +1,2 @@
-# pnwcybersec
-A malware-detection module developed using fast.ai's deep-learning algorithms. 
+# A Deep Learning Malware Detection Module
 https://pypi.org/project/pnwcybersec/

@@ -11,7 +11,7 @@ from fastai.vision.all import *
 #pathlib.PosixPath = pathlib.WindowsPath
 #################################################
 
-path = '/run/media/bbdcmf/T7/' # Path to the project folder
+path = '/run/media/bbdcmf/T7/ITS490-Project/' # Path to the project folder
 #path = 'E:/ITS490-Project/'
 exportPath = path+'github/3-21-22-resnet50-train2-pretrained-epoch_50-bs-32-98.21%.pkl' # Path to our exported model/where we will export the model
 trainPath = path+'dataset/train2/'

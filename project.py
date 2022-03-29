@@ -13,7 +13,7 @@ from fastai.vision.all import *
 
 path = '/run/media/bbdcmf/T7/' # Path to the project folder
 #path = 'E:/ITS490-Project/'
-exportPath = path+'models/3-21-22-resnet50-train2-pretrained-epoch_50-bs-32-98.21%.pkl' # Path to our exported model/where we will export the model
+exportPath = path+'github/3-21-22-resnet50-train2-pretrained-epoch_50-bs-32-98.21%.pkl' # Path to our exported model/where we will export the model
 trainPath = path+'dataset/train2/'
 
 #####################################***Training a new model***#####################################
@@ -28,8 +28,8 @@ trainPath = path+'dataset/train2/'
 
 ##################################***Loading a PreTrained Model***##################################
 #
-#model = ic.loadModel(exportPath, cpu=True)
-model = ic.getBestModel(cpu=False)
+model = ic.loadModel(exportPath, cpu=True)
+#model = ic.getBestModel(cpu=False)
 #
 ####################################################################################################
 
@@ -53,7 +53,10 @@ while answered == False:
     elif should_convert.lower() == 'n':
         # If the files are already images
         dstPath = input("Enter the folder containing the images you'd like to predict:\n")
-        answered = ic.isDir(dstPath)
+        isDir3 = os.path.isdir(dstPath)
+        if(not isDir3):
+            print("Error: Directory not found, please try again")
+        answered = isDir3
     else:
         print("Error, you must enter either y or n")
 

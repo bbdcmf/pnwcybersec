@@ -44,13 +44,12 @@ def loadData(trainPath, valid_pct, bs=None, get_items=get_image_files, get_y = p
     return dls
 
 # dls = DataLoaders object, arch = architecture, path = path to where the trained model should be exported, epoch_ct = number of iterations, metrics = the metrics used to train the model, pretrained = whether or not to use a pretrained model (False = Create model from scratch)
-def trainModel(dls, arch, path, epoch_ct=1, base_lr=None, metrics=error_rate, pretrained=True):
+def trainModel(dls, arch, path, epoch_ct=1, metrics=error_rate, pretrained=True):
     model = cnn_learner(dls, arch, metrics=metrics, pretrained=pretrained)
-    #print(model.lr_find())
-    model.fine_tune(epochs=epoch_ct, base_lr = base_lr)
+    model.fine_tune(epochs=epoch_ct, base_lr = model.lr_find()[0])
     model.dls.train = dls.train
     model.dls.valid = dls.valid
-    model.export(path)
+    #model.export(path)
     return model
 
 # exportPath = path to the exported model, cpu = whether the model should use the cpu or gpu

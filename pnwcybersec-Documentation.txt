@@ -17,7 +17,7 @@ Functions:
 			
 	loadData(trainPath, valid_pct, bs=None, get_items=get_image_files, get_y=parent_label, item_tfms=Resize(224, ResizeMethod.Pad, pad_mode='zeros'), batch_tfms=aug_transforms())
 		Description:
-			Loads all of the data that will be used for the CNN model.
+			Loads all of the data that will be used to train the CNN model.
 		Input:
 			trainPath: Directory path containing the train set image file(s).
 			valid_pct: The percent of the train set's files that will be used for the validation set.
@@ -40,7 +40,7 @@ Functions:
 			path: The path to where the exported model will be saved. Must specifiy the fileName.pkl.
 			epoch_ct: The number of iterations. Default=1.
 			base_lr: The base learning rate. Default=None.
-			metrics: The metrics used to determine how well the model is training. Default=error_rate.
+			metrics: The metrics used to determine how well the model is training. Default=[error_rate, accuracy].
 			pretrained: Whether or not to use a pretrained model. False=Create model from scratch. Default=True.
 		Output:
 			model: The trained model

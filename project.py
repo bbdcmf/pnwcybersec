@@ -21,7 +21,7 @@ trainPath = path+'dataset/train2/'
 #dls = ic.loadData(trainPath, valid_pct=0.2, bs=32)
 #dls.valid.show_batch(max_n=8, nrows=2)
 #plt.show()
-#model = ic.trainModel(dls, resnet50, path=exportPath, epoch_ct=50, base_lr=None, metrics=[error_rate, accuracy], pretrained=True)
+#model = ic.trainModel(dls, resnet50, path=exportPath, epoch_ct=50, metrics=[error_rate, accuracy], pretrained=True)
 #ic.confusionMatrix(model)
 #
 ####################################################################################################
@@ -60,4 +60,5 @@ while answered == False:
     else:
         print("Error, you must enter either y or n")
 
+#dstPath = '/run/media/bbdcmf/T7/ITS490-Project/dataset/theZoo_Benign-NET/malware/'
 ic.predict(model, dstPath, labeled=True)

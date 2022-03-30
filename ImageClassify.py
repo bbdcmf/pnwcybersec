@@ -99,7 +99,7 @@ def predict(model, testPath, threshold=None, labeled=False):
                 warning = '| this prediction was flipped'
             else:
                 warning = ''
-        print(f"Item: {item} | Prediction: {pred}; Probability: {probs[pred_idx]:.04f} {warning}")
+        print(f"Item: {item} | Prediction: {pred} | Probability: {probs[pred_idx]:.04f} {warning}")
         if(labeled):
             if(pred == parent_label(item)):
                 modelaccuracy += 1

@@ -28,7 +28,7 @@ trainPath = path+'dataset/train2/'
 
 ##################################***Loading a PreTrained Model***##################################
 #
-model = ic.loadModel(exportPath, cpu=True)
+model = ic.loadModel(exportPath, cpu=False)
 #model = ic.getBestModel(cpu=False)
 #
 ####################################################################################################
@@ -60,5 +60,4 @@ while answered == False:
     else:
         print("Error, you must enter either y or n")
 
-#dstPath = '/run/media/bbdcmf/T7/ITS490-Project/dataset/theZoo_Benign-NET/malware/'
 ic.predict(model, dstPath, labeled=True)

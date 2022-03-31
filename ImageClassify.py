@@ -65,7 +65,7 @@ def getBestModel(cpu=False):
     return model
 
 # item = the specific image you want to show
-def showImages(item):
+def showImage(item):
     # Show the images that are being predicted
     img = plt.imread(item)
     plt.imshow(img)

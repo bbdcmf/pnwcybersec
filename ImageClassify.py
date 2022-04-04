@@ -80,29 +80,44 @@ def confusionMatrix(model):
 
 # model = the trained model, testPath = the path containing the test set of images, labeled = whether or not the data has labels we can extract
 def predict(model, testPath, threshold=None, labeled=False):
-    global modelaccuracy
-    global modeltotal
-    modelaccuracy = 0
-    modeltotal = 0
     warning = ''
     path = Path(testPath)
     dirs = os.listdir(path)
     files = get_image_files(Path(testPath))
+    modeltotal = 0
+    true_positive = 0
+    true_negative = 0
+    false_positive = 0
+    false_negative = 0
     for item in files:
-        pred, pred_idx, probs = model.predict(item)
+        actual = parent_label(item)
+        prediction, prediction_index, probabilities = model.predict(item)
         if(threshold is not None):
-            if(pred == 'goodware' and probs[pred_idx] < threshold):
-                pred = 'malware'
+            if(prediction == 'goodware' and probabilities[prediction_index] < threshold):
+                prediction = 'malware'
                 warning = '| this prediction was flipped'
-            elif(pred == 'malware' and probs[pred_idx] < threshold):
-                pred = 'goodware'
+            elif(prediction == 'malware' and probabilities[prediction_index] < threshold):
+                prediction = 'goodware'
                 warning = '| this prediction was flipped'
             else:
                 warning = ''
-        print(f"Item: {item} | Prediction: {pred} | Probability: {probs[pred_idx]:.04f} {warning}")
+        print(f"Item: {item} | Prediction: {prediction} | Probability: {probabilities[prediction_index]:.04f} {warning}")
         if(labeled):
-            if(pred == parent_label(item)):
-                modelaccuracy += 1
+            if(prediction == 'malware'):
+                if(actual == 'malware'):
+                    true_positive += 1
+                elif(actual == 'goodware'):
+                    false_positive += 1
+            elif(prediction == 'goodware'):
+                if(actual == 'goodware'):
+                    true_negative += 1
+                elif(actual == 'malware'):
+                    false_negative += 1
             modeltotal += 1
+
     if(labeled):
-        print("Total Accuracy", str((modelaccuracy/modeltotal) * 100)+"%")
+        accuracy = (true_positive + true_negative) / modeltotal
+        precision = true_positive / (true_positive + false_positive)
+        recall = true_positive / (true_positive + false_negative)
+        f1_score = 2 * ((precision * recall) / (precision + recall))
+        print("Accuracy", str(round(accuracy*100, 2)) + "%\nPrecision:", str(round(precision*100, 2)) + "%\nRecall:", str(round(recall*100, 2)) + "%\nF1 Score:", round(f1_score, 4))

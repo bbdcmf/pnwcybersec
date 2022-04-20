@@ -1,2 +1,5 @@
 knn_classify.py
 good.txt
+__pycache__/
+models/_tmp.pth
+models/4-17-BODMAS-new_goodware.pkl

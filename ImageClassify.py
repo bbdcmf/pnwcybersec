@@ -154,7 +154,7 @@ def predict(model, testPath, labeled=False, pos_lbl=None, neg_lbl=None, threshol
             )
             conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
 
-            fig, ax = plt.subplots(figsize=(7.5, 7.5))
+            fig, ax = plt.subplots(figsize=(7, 5.5))
             ax.matshow(conf_matrix, cmap=plt.cm.Blues, alpha=0.3)
             for i in range(conf_matrix.shape[0]):
                 for j in range(conf_matrix.shape[1]):

@@ -1,13 +1,17 @@
-from fastai.vision.all import *
-from fastai.metrics import accuracy
+import os, warnings
 import numpy as np
-import os
 import PIL.Image as Image
 import matplotlib.pyplot as plt
+from fastai.vision.all import *
+from fastai.metrics import accuracy
+from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
 
 Image.MAX_IMAGE_PIXELS = 933120000 # Change the max pixels to avoid warnings
 
-# src = Path to the folder containing the files you want to become images. dst = Path to folder where you want the images saved.
+'''
+src = Path to the folder containing the files you want to become images
+dst = Path to folder where you want the images saved.
+'''
 def convertToImage(src, dst):
     files=os.listdir(src)
     print('Source:', src)
@@ -16,22 +20,27 @@ def convertToImage(src, dst):
     for file in files:
         srcPath = src+file
         dstPath = dst+file+'.png'
-        f = open(srcPath, 'rb')
-        ln = os.path.getsize(srcPath)
-        width = int(ln**0.5)
-        a = bytearray(f.read())
-        f.close()
-        g = np.reshape(a[:width * width], (width, width))
-        g = np.uint8(g)
+        with open(srcPath, 'rb') as f:
+            ln = os.path.getsize(srcPath)
+            width = int(ln**0.5)
+            imgByteArr = bytearray(f.read()) # Copy exe data to bytearray
+        g = np.reshape(imgByteArr[:width * width], (width, width)) # Reshape bytearray so it is square
+        g = np.uint8(g) # Ensure data is between 0 and 255, where 0=black and 1=white
         img = Image.fromarray(g)
         img.save(dstPath)
     print('Files converted successfully')
     
-# trainPath = directory containing the train set. valid_pct = Percent of data used for validation set. bs = batch size. get_items = Function used extract the train set. get_p = Function used to classify the train set. item_tfms = Transforms to be performed on all of the data. batch_tfms = Transforms to be performed on each batch.
-# Returns a dataloader object
-def loadData(trainPath, valid_pct, bs=None, get_items=get_image_files, get_y = parent_label, item_tfms = Resize(224, ResizeMethod.Pad, pad_mode='zeros'), batch_tfms = aug_transforms()):
-    #aug_transforms(pad_mode='zeros', mult=2, min_scale=0.5)
-    # parent_label -->> simply gets the name of the folder a file is in
+'''
+trainPath = directory containing the train set
+valid_pct = Percent of data used for validation set
+bs = batch size
+get_items = Function used extract the train set
+get_y = Function used to classify the train set
+item_tfms = Transforms to be performed on all of the data
+batch_tfms = Transforms to be performed on each batch
+'''
+def loadData(trainPath, valid_pct, bs=None, get_items=get_image_files, get_y=parent_label, item_tfms=Resize(224, ResizeMethod.Pad, pad_mode='zeros'), batch_tfms=aug_transforms()):
+    # parent_label --> simply gets the name of the folder a file is in
     loader = DataBlock(
         blocks = (ImageBlock, CategoryBlock),
         get_items = get_items,
@@ -43,7 +52,14 @@ def loadData(trainPath, valid_pct, bs=None, get_items=get_image_files, get_y = p
     dls = loader.dataloaders(trainPath, bs=bs)
     return dls
 
-# dls = DataLoaders object, arch = architecture, path = path to where the trained model should be exported, epoch_ct = number of iterations, metrics = the metrics used to train the model, pretrained = whether or not to use a pretrained model (False = Create model from scratch)
+'''
+dls  = Fastai DataLoaders object
+arch = Architecture, e.g. resnet50
+path = Path to where the trained model should be exported
+epoch_ct = Number of iterations
+metrics = Metrics to print while training
+pretrained = Whether or not to use a pretrained model (False = Create model from scratch)
+'''
 def trainModel(dls, arch, path, epoch_ct=1, metrics=[error_rate, accuracy], pretrained=True):
     model = cnn_learner(dls, arch, metrics=metrics, pretrained=pretrained)
     base_lr = model.lr_find()[0]
@@ -51,9 +67,12 @@ def trainModel(dls, arch, path, epoch_ct=1, metrics=[error_rate, accuracy], pret
     model.dls.train = dls.train
     model.dls.valid = dls.valid
     model.export(path)
-    return model
-
-# exportPath = path to the exported model, cpu = whether the model should use the cpu or gpu
+    return model 
+    
+'''
+exportPath = Path to the exported model
+cpu = Whether the model should use the CPU or GPU
+'''
 def loadModel(exportPath, cpu=False):
     model = load_learner(exportPath, cpu)
     return model
@@ -66,7 +85,6 @@ def getBestModel(cpu=False):
 
 # item = the specific image you want to show
 def showImage(item):
-    # Show the images that are being predicted
     img = plt.imread(item)
     plt.imshow(img)
     plt.axis('off')
@@ -78,46 +96,59 @@ def confusionMatrix(model):
     interp.plot_confusion_matrix()
     plt.show()
 
-# model = the trained model, testPath = the path containing the test set of images, labeled = whether or not the data has labels we can extract
-def predict(model, testPath, threshold=None, labeled=False):
+'''
+model = The trained model
+testPath = Path containing the test set of images
+labeled = Whether or not the data has labels that can be extracted
+pos_lbl = Label that corresponds to positive (only necessary if labeled=True)
+neg_lbl = Label that corresponds to negative (only necessary if threshold not None)
+threshold = Probability threshold, any prediction with a probability less than this will be flipped
+'''
+def predict(model, testPath, labeled=False, pos_lbl=None, neg_lbl=None, threshold=None):
     warning = ''
     path = Path(testPath)
     dirs = os.listdir(path)
     files = get_image_files(Path(testPath))
-    modeltotal = 0
-    true_positive = 0
-    true_negative = 0
-    false_positive = 0
-    false_negative = 0
+    y_test = []
+    y_pred = []
+    widths = []
     for item in files:
+        with Image.open(item) as im:
+            width, _height = im.size # Since perfect square only need 1
+            widths.append(width)
         actual = parent_label(item)
         prediction, prediction_index, probabilities = model.predict(item)
-        if(threshold is not None):
-            if(prediction == 'goodware' and probabilities[prediction_index] < threshold):
-                prediction = 'malware'
+        if(threshold is not None): # If the user set a threshold
+            if(prediction == neg_lbl and probabilities[prediction_index] < threshold):
+                prediction = pos_lbl
                 warning = '| this prediction was flipped'
-            elif(prediction == 'malware' and probabilities[prediction_index] < threshold):
-                prediction = 'goodware'
+            elif(prediction == pos_lbl and probabilities[prediction_index] < threshold):
+                prediction = neg_lbl
                 warning = '| this prediction was flipped'
             else:
                 warning = ''
-        print(f"Item: {item} | Prediction: {prediction} | Probability: {probabilities[prediction_index]:.04f} {warning}")
-        if(labeled):
-            if(prediction == 'malware'):
-                if(actual == 'malware'):
-                    true_positive += 1
-                elif(actual == 'goodware'):
-                    false_positive += 1
-            elif(prediction == 'goodware'):
-                if(actual == 'goodware'):
-                    true_negative += 1
-                elif(actual == 'malware'):
-                    false_negative += 1
-            modeltotal += 1
-
+        fmtItem = str(item).split('/')[-1].split('\\')[-1] # Get just the name of the image, ignore the path
+        print(f"Item: {fmtItem.ljust(72)} | Actual: {actual.ljust(8)} | Prediction: {prediction.ljust(8)} | Probability: {probabilities[prediction_index]:.04f} {warning}")
+        y_test.append(actual)
+        y_pred.append(prediction)
+    print(
+        "-"*25,
+        "\nImage Width Statistics:",
+        "\nCnt:", len(widths),
+        "\nMin:", min(widths),
+        "\nMax:", max(widths),
+        "\nAvg:", np.average(widths),
+        "\nStd:", round(np.std(widths), 3),
+    )
     if(labeled):
-        accuracy = (true_positive + true_negative) / modeltotal
-        precision = true_positive / (true_positive + false_positive)
-        recall = true_positive / (true_positive + false_negative)
-        f1_score = 2 * ((precision * recall) / (precision + recall))
-        print("Accuracy", str(round(accuracy*100, 2)) + "%\nPrecision:", str(round(precision*100, 2)) + "%\nRecall:", str(round(recall*100, 2)) + "%\nF1 Score:", round(f1_score, 4))
+        with warnings.catch_warnings():
+            warnings.simplefilter(action='ignore')
+            print(
+                "-"*25,
+                "\nPerformance Metrics:",
+                "\nAccuracy:", round(accuracy_score(y_test, y_pred), 4),
+                "\nPrecision:", round(precision_score(y_test, y_pred, pos_label=pos_lbl), 4),
+                "\nRecall:", round(recall_score(y_test, y_pred, pos_label=pos_lbl), 4),
+                "\nF1:", round(f1_score(y_test, y_pred, pos_label=pos_lbl), 4),
+                "\n"+"-"*25
+            )

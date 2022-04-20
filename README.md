@@ -72,6 +72,6 @@ For GPU support see: https://pytorch.org/get-started/locally/
           model: The trained model used to predict the samples
           testPath: The path to the directory containing the test set. Type: string
           labeled: Whether or not the test samples' labels can be extracted from the name of the directory they are stored in. If labeled, then this function will print the accuracy of all of its predictions for the test set. Expected labels are: ['malware', 'goodware']. Type: boolean
-          pos_lbl: Label that corresponds to positive (only necessary if labeled=True)
-          neg_lbl: Label that corresponds to negative (only necessary if threshold not None)
+          pos_lbl = Label that corresponds to positive when determining true positive vs. false positive
+          neg_lbl = Label that corresponds to negative when determining true negative vs. false negative
           threshold: The probability threshold for when a prediction should not be trusted. Any prediction's probability below the threshold will be flipped and flagged. Type: float

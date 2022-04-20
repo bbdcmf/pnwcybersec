@@ -63,4 +63,4 @@ while not answered:
     else:
         print("Error, you must enter either y or n")
 
-ic.predict(model, dstPath, labeled=True, pos_lbl='malware')
+ic.predict(model, dstPath, labeled=True, pos_lbl='malware', neg_lbl='goodware')

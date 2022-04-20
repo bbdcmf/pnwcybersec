@@ -4,7 +4,7 @@ import PIL.Image as Image
 import matplotlib.pyplot as plt
 from fastai.vision.all import *
 from fastai.metrics import accuracy
-from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
+from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score, confusion_matrix
 
 Image.MAX_IMAGE_PIXELS = 933120000 # Change the max pixels to avoid warnings
 
@@ -100,8 +100,8 @@ def confusionMatrix(model):
 model = The trained model
 testPath = Path containing the test set of images
 labeled = Whether or not the data has labels that can be extracted
-pos_lbl = Label that corresponds to positive (only necessary if labeled=True)
-neg_lbl = Label that corresponds to negative (only necessary if threshold not None)
+pos_lbl = Label that corresponds to positive when determining true positive vs. false positive
+neg_lbl = Label that corresponds to negative when determining true negative vs. false negative
 threshold = Probability threshold, any prediction with a probability less than this will be flipped
 '''
 def predict(model, testPath, labeled=False, pos_lbl=None, neg_lbl=None, threshold=None):
@@ -152,3 +152,19 @@ def predict(model, testPath, labeled=False, pos_lbl=None, neg_lbl=None, threshol
                 "\nF1:", round(f1_score(y_test, y_pred, pos_label=pos_lbl), 4),
                 "\n"+"-"*25
             )
+            conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
+
+            fig, ax = plt.subplots(figsize=(7.5, 7.5))
+            ax.matshow(conf_matrix, cmap=plt.cm.Blues, alpha=0.3)
+            for i in range(conf_matrix.shape[0]):
+                for j in range(conf_matrix.shape[1]):
+                    ax.text(x=j, y=i,s=conf_matrix[i, j], va='center', ha='center', size='xx-large')
+ 
+            plt.xlabel('Predictions', fontsize=18)
+            plt.ylabel('Actuals', fontsize=18)
+            plt.title('Confusion Matrix', fontsize=18)
+            ax.set_xticklabels([0, pos_lbl, neg_lbl])
+            ax.set_yticklabels([0, pos_lbl, neg_lbl])
+            plt.show()
+
+

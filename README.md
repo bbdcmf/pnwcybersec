@@ -65,11 +65,13 @@ For GPU support see: https://pytorch.org/get-started/locally/
           Displays a confusion matrix for the specified model
      Input:
           model: The trained model		
-#### **predict(model, testPath, threshold=None, labeled=False)**
+#### **def predict(model, testPath, labeled=False, pos_lbl=None, neg_lbl=None, threshold=None)**
      Description:
           Prints the prediction and probability of that prediction, for each sample specified. 
      Input:
           model: The trained model used to predict the samples
           testPath: The path to the directory containing the test set. Type: string
-          threshold: The probability threshold for when a prediction should not be trusted. Any prediction's probability below the threshold will be flipped and flagged. Type: float
           labeled: Whether or not the test samples' labels can be extracted from the name of the directory they are stored in. If labeled, then this function will print the accuracy of all of its predictions for the test set. Expected labels are: ['malware', 'goodware']. Type: boolean
+          pos_lbl: Label that corresponds to positive (only necessary if labeled=True)
+          neg_lbl: Label that corresponds to negative (only necessary if threshold not None)
+          threshold: The probability threshold for when a prediction should not be trusted. Any prediction's probability below the threshold will be flipped and flagged. Type: float

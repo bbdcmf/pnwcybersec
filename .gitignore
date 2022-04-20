@@ -3,3 +3,5 @@ good.txt
 __pycache__/
 models/_tmp.pth
 models/4-17-BODMAS-new_goodware.pkl
+models/4-8-entire_bodmas-pretrained-epoch_50-bs_32.pkl
+models/4-9-22-resnet50-train2-not_pretrained-epoch_50-bs-32.pkl

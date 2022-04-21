@@ -2,6 +2,7 @@ import os, warnings
 import numpy as np
 import PIL.Image as Image
 import matplotlib.pyplot as plt
+from colorama import Fore
 from fastai.vision.all import *
 from fastai.metrics import accuracy
 from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score, confusion_matrix
@@ -91,10 +92,24 @@ def showImage(item):
     plt.title(item)
     plt.show()
     
-def confusionMatrix(model):
-    interp = ClassificationInterpretation.from_learner(model)
-    interp.plot_confusion_matrix()
-    plt.show()
+def confusionMatrix(isModel, model=None, y_true=None, y_pred=None, pos_label=None, neg_label=None):
+    if(isModel):
+        interp = ClassificationInterpretation.from_learner(model)
+        interp.plot_confusion_matrix()
+        plt.show()
+    else:
+        conf_matrix = confusion_matrix(y_true=y_true, y_pred=y_pred)
+        fig, ax = plt.subplots(figsize=(7, 5.5))
+        ax.matshow(conf_matrix, cmap=plt.cm.Blues, alpha=0.3)
+        for i in range(conf_matrix.shape[0]):
+            for j in range(conf_matrix.shape[1]):
+                ax.text(x=j, y=i,s=conf_matrix[i, j], va='center', ha='center', size='xx-large')
+        plt.xlabel('Predictions', fontsize=18)
+        plt.ylabel('Actuals', fontsize=18)
+        plt.title('Confusion Matrix', fontsize=18)
+        ax.set_xticklabels([0, neg_label, pos_label])
+        ax.set_yticklabels([0, neg_label, pos_label])
+        plt.show()
 
 '''
 model = The trained model
@@ -109,6 +124,10 @@ def predict(model, testPath, labeled=False, pos_lbl=None, neg_lbl=None, threshol
     path = Path(testPath)
     dirs = os.listdir(path)
     files = get_image_files(Path(testPath))
+    malware_test = []
+    malware_pred = []
+    goodware_test = []
+    goodware_pred = []
     y_test = []
     y_pred = []
     widths = []
@@ -128,43 +147,47 @@ def predict(model, testPath, labeled=False, pos_lbl=None, neg_lbl=None, threshol
             else:
                 warning = ''
         fmtItem = str(item).split('/')[-1].split('\\')[-1] # Get just the name of the image, ignore the path
-        print(f"Item: {fmtItem.ljust(72)} | Actual: {actual.ljust(8)} | Prediction: {prediction.ljust(8)} | Probability: {probabilities[prediction_index]:.04f} {warning}")
+        if(actual == prediction): # Print green if correct
+            print(f"Item: {fmtItem.ljust(72)} | Actual: {Fore.GREEN+actual.ljust(8)+Fore.WHITE} | Prediction: {Fore.GREEN+prediction.ljust(8)+Fore.WHITE} | Probability: {probabilities[prediction_index]:.04f} {warning}")
+        else: # Print red if incorrect
+            print(f"Item: {fmtItem.ljust(72)} | Actual: {Fore.RED+actual.ljust(8)+Fore.WHITE} | Prediction: {Fore.RED+prediction.ljust(8)+Fore.WHITE} | Probability: {probabilities[prediction_index]:.04f} {warning}")
+        if(actual == pos_lbl): # If the file is malware
+            malware_test.append(actual)
+            malware_pred.append(prediction)
+        elif(actual == neg_lbl): #If the file is goodware
+            goodware_test.append(actual)
+            goodware_pred.append(prediction)
         y_test.append(actual)
         y_pred.append(prediction)
     print(
         "-"*25,
-        "\nImage Width Statistics:",
+        "\n"+Fore.YELLOW+"Image Width Statistics:",
         "\nCnt:", len(widths),
         "\nMin:", min(widths),
         "\nMax:", max(widths),
         "\nAvg:", np.average(widths),
         "\nStd:", round(np.std(widths), 3),
     )
+    
     if(labeled):
         with warnings.catch_warnings():
             warnings.simplefilter(action='ignore')
             print(
-                "-"*25,
-                "\nPerformance Metrics:",
+                Fore.WHITE+"-"*25,
+                "\n"+Fore.CYAN+"Overall Performance Metrics:",
                 "\nAccuracy:", round(accuracy_score(y_test, y_pred), 4),
                 "\nPrecision:", round(precision_score(y_test, y_pred, pos_label=pos_lbl), 4),
                 "\nRecall:", round(recall_score(y_test, y_pred, pos_label=pos_lbl), 4),
                 "\nF1:", round(f1_score(y_test, y_pred, pos_label=pos_lbl), 4),
-                "\n"+"-"*25
+                "\n"+Fore.WHITE+"-"*25,
+                # Precision and F1 Score removed below because these statistics don't include false positives, making precision and f1 useless
+                "\n"+Fore.RED+"Malware Performance Metrics:",
+                "\nAccuracy:", round(accuracy_score(malware_test, malware_pred), 4),
+                "\nRecall:", round(recall_score(malware_test, malware_pred, pos_label=pos_lbl), 4),
+                "\n"+Fore.WHITE+"-"*25,
+                "\n"+Fore.GREEN+"Goodware Performance Metrics:",
+                "\nAccuracy:", round(accuracy_score(goodware_test, goodware_pred), 4),
+                "\nRecall:", round(recall_score(goodware_test, goodware_pred, pos_label=neg_lbl), 4),
+                "\n"+Fore.WHITE+"-"*25
             )
-            conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
-
-            fig, ax = plt.subplots(figsize=(7, 5.5))
-            ax.matshow(conf_matrix, cmap=plt.cm.Blues, alpha=0.3)
-            for i in range(conf_matrix.shape[0]):
-                for j in range(conf_matrix.shape[1]):
-                    ax.text(x=j, y=i,s=conf_matrix[i, j], va='center', ha='center', size='xx-large')
- 
-            plt.xlabel('Predictions', fontsize=18)
-            plt.ylabel('Actuals', fontsize=18)
-            plt.title('Confusion Matrix', fontsize=18)
-            ax.set_xticklabels([0, pos_lbl, neg_lbl])
-            ax.set_yticklabels([0, pos_lbl, neg_lbl])
-            plt.show()
-
-
+            confusionMatrix(isModel=False, y_true=y_test, y_pred=y_pred, pos_label=pos_lbl, neg_label=neg_lbl)

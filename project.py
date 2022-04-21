@@ -19,19 +19,19 @@ exportPath = path+'github/models/3-21-22-resnet50-train2-pretrained-epoch_50-bs-
 
 #####################################***Training a new model***#####################################
 #
-#trainPath = path+'dataset/train2/'
+#trainPath = path+'dataset/BODMAS_train/'
 #dls = ic.loadData(trainPath, valid_pct=0.2, bs=32)
 #dls.valid.show_batch(max_n=8, nrows=2)
 #plt.show()
 #model = ic.trainModel(dls, resnet50, path=exportPath, epoch_ct=50, metrics=[error_rate, accuracy], pretrained=False)
-#ic.confusionMatrix(model)
-#print(dls.valid)
+#ic.confusionMatrix(isModel=True, model=model)
 #
 ####################################################################################################
 
 ##################################***Loading a Trained Model***##################################
 #
-model = ic.loadModel(exportPath, cpu=False)
+model = ic.loadModel(exportPath, cpu=True)
+
 #model = ic.getBestModel(cpu=False)
 #
 #################################################################################################

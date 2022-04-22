@@ -1,6 +1,10 @@
 knn_classify.py
 good.txt
+__pycache__/
 ai/__pycache__/
+www/www/__pycache__/
+www/projectApp/__pycache__/
+www/projectApp/migrations/__pycache__/
 ai/models/_tmp.pth
 ai/models/4-17-BODMAS-new_goodware.pkl
 ai/models/4-8-entire_bodmas-pretrained-epoch_50-bs_32.pkl

@@ -14,8 +14,9 @@ async def get_bytes(url):
 
 
 app = Starlette()
+PARENT_PATH = './www/' # we might have to play with this, escepially if you start in www
 
-learn = load_learner('/run/media/bbdcmf/T7/ITS490-Project/github/ai/models/3-21-22-resnet50-train2-pretrained-epoch_50-bs-32-98.21%.pkl')
+learn = load_learner(PARENT_PATH+'../ai/models/3-21-22-resnet50-train2-pretrained-epoch_50-bs-32-98.21%.pkl') # uses the folder of your console
 
 
 @app.route("/upload", methods=["POST"])
@@ -46,8 +47,8 @@ def predict_image_from_bytes(bytes, true_class):
     g = np.uint8(g) # Ensure data is between 0 and 255, where 0=black and 1=white
     img = Image.fromarray(g)
     file_hash = hashlib.sha256(bytes).hexdigest()
-    img.save("imgs/"+true_class+"/"+file_hash+'.exe.png')
-    class_,predictions, losses = learn.predict("imgs/"+true_class+"/"+file_hash+'.exe.png')
+    img.save(PARENT_PATH+"imgs/"+true_class+"/"+file_hash+'.exe.png')
+    class_,predictions, losses = learn.predict(PARENT_PATH+"imgs/"+true_class+"/"+file_hash+'.exe.png')
     return JSONResponse({
         "Prediction": class_,
         "Probabilities": sorted(
@@ -60,26 +61,27 @@ def predict_image_from_bytes(bytes, true_class):
 
 @app.route("/")
 def form(request):
-    return HTMLResponse(
-        """
-        <h3>Malware Detection with Machine Learning<h3>
-        <form action="/upload" method="post" enctype="multipart/form-data">
-            Is the program goodware or malware:
-            <select id="class_true" name="class_true">
-                <option value="unknown">Unknown</option>
-                <option value="goodware">Goodware</option>
-                <option value="malware">Malware</option>
-            </select><br/>
-            Select program to upload:
-            <input type="file" name="file">
-            <input type="submit" value="Predict">
-        </form>
-        Or submit a URL:
-        <form action="/classify-url" method="get">
-            <input type="url" name="url">
-            <input type="submit" value="Fetch and analyze image">
-        </form>
-    """) # Currently selecting if the program being uploaded is malware or goodware only work if the user is uploading from their computer, gotta figure out how to format it so when someone upload from a link they can still select if its malware or goodware
+    return HTMLResponse(open(PARENT_PATH+'views/index.py').read()) # Currently selecting if the program being uploaded is malware or goodware only work if the user is uploading from their computer, gotta figure out how to format it so when someone upload from a link they can still select if its malware or goodware
+    # return HTMLResponse(
+    # """
+    #     <h3>Malware Detection with Machine Learning<h3>
+    #     <form action="/upload" method="post" enctype="multipart/form-data">
+    #         Is the program goodware or malware:
+    #         <select id="class_true" name="class_true">
+    #             <option value="unknown">Unknown</option>
+    #             <option value="goodware">Goodware</option>
+    #             <option value="malware">Malware</option>
+    #         </select><br/>
+    #         Select program to upload:
+    #         <input type="file" name="file">
+    #         <input type="submit" value="Predict">
+    #     </form>
+    #     Or submit a URL:
+    #     <form action="/classify-url" method="get">
+    #         <input type="url" name="url">
+    #         <input type="submit" value="Fetch and analyze image">
+    #     </form>
+    # """)
 
 
 @app.route("/form")

@@ -49,31 +49,55 @@
             border: 5px solid red;
             width:  200px;
             height: 100px;
+            text-align: center;
         }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-gap: 20px;
+        }
+        .content {
+            margin: 2em;
+        }
+        
     </style>
+    <header style="text-align: center;">
+        <h1>Malware Detection with Machine Learning!!!!1</h1>
+    </header>
     <body>
-        <h3>Malware Detection with Machine Learning<h3>
-        <form action="/upload" method="post" enctype="multipart/form-data">
-            Is the program goodware or malware:
-            <select id="class_true" name="class_true">
-                <option value="unknown">Unknown</option>
-                <option value="goodware">Goodware</option>
-                <option value="malware">Malware</option>
-            </select><br/>
-            Select program to upload:
-            <input type="file" name="file">
-            <div id="drop_zone" name="file-drop" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
-                <p>Drag one or more files to this Drop Zone ...</p>
+        <div class="container">
+            <div class="content">
+                <form action="/upload" method="post" enctype="multipart/form-data">
+                    Is the program goodware or malware:
+                    <select id="class_true" name="class_true">
+                        <option value="unknown">Unknown</option>
+                        <option value="goodware">Goodware</option>
+                        <option value="malware">Malware</option>
+                    </select><br/>
+                    Select a program to upload:
+                    <input type="file" name="file">
+                    <div id="drop_zone" name="file-drop" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
+                        <p>Or drag it here</p>
+                    </div>
+                    <input type="submit" value="Predict">
+                </form>
+                Or submit a URL:
+                <form action="/classify-url" method="get">
+                    <input type="url" name="url">
+                    <input type="submit" value="Fetch and analyze image">
+                </form>
             </div>
-            <input type="submit" value="Predict">
-        </form>
-        Or submit a URL:
-        <form action="/classify-url" method="get">
-            <input type="url" name="url">
-            <input type="submit" value="Fetch and analyze image">
-        </form>
+            <div class="content">
+                <h2>Results</h2>
+                <h3>Prediction:</h3>
+                <h3>Probabilities</h3>
+                <p>Goodware:</p>
+                <p>Malware:</p>
+            </div>
+        </div>
     </body>
-    <footer>
+    <footer style="position: absolute; bottom: 0; width: 100%; height: 2.5rem;">
         <p>Created by: <a href="http://www.github.com/bbdcmf" target="_blank">Ryan Frederick</a> & <a href="http://www.github.com/JoeyShapiro" target="_blank">Joseph Shaprio</a></p>
         <p>With the advising of Ricardo Calix Ph.D.</p>
     </footer>

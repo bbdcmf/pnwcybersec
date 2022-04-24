@@ -112,6 +112,7 @@ def predict_image_from_bytes(bytes, true_class):
         }
     </script>
     <style>
+    	
         table, th, td {
             border: 1px solid black;
             border-collapse: collapse;
@@ -155,9 +156,9 @@ def predict_image_from_bytes(bytes, true_class):
                     <input type="file" name="file">
                     <div id="drop_zone" name="file-drop" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
                         <p>Or drag it here</p>
-                    </div>
-                    <input type="submit" value="Predict">
-                </form>
+                    </div><br>
+                    <input type="submit" value="Predict" style="padding: 5px;">
+                </form><br><br>
                 Or submit a URL:
                 <form action="/classify-url" method="get">
                     <input type="url" name="url">
@@ -168,8 +169,8 @@ def predict_image_from_bytes(bytes, true_class):
                 <h2>Results</h2>
                 <h3>Prediction:</h3><p>"""+ probs[0][0] + """
                 </p><h3>Probabilities:</h3>
-                <table><tr><th>""" + probs[0][0] + """</th><td>""" + str(round(probs[0][1], 4)*100) + """%
-                </td></tr><tr><th>""" + probs[1][0] + """</th><td>""" + str(round(probs[1][1], 4)*100) + """%
+                <table><tr><th>""" + probs[0][0] + """</th><td>""" + str(round(probs[0][1]*100, 2)) + """%
+                </td></tr><tr><th>""" + probs[1][0] + """</th><td>""" + str(round(probs[1][1]*100, 2)) + """%
                 </td></tr></table>
             </div>
         </div>

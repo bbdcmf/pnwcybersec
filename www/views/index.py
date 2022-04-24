@@ -79,9 +79,9 @@
                     <input type="file" name="file">
                     <div id="drop_zone" name="file-drop" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
                         <p>Or drag it here</p>
-                    </div>
-                    <input type="submit" value="Predict">
-                </form>
+                    </div><br>
+                    <input type="submit" value="Predict" style="padding: 5px;">
+                </form><br><br>
                 Or submit a URL:
                 <form action="/classify-url" method="get">
                     <input type="url" name="url">

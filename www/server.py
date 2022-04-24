@@ -29,7 +29,7 @@ with open(PARENT_PATH+'secret.json') as s:
         database=secret['database']
     )
 
-cursor = db.cursor()
+cursor = db.cursor(buffered=True)
 
 @app.route("/upload", methods=["POST"])
 async def upload(request):
@@ -62,13 +62,13 @@ def predict_image_from_bytes(bytes, true_class):
     img.save(PARENT_PATH+"imgs/"+true_class+"/"+file_hash+'.exe.png')
     class_, predictions, losses = learn.predict(PARENT_PATH+"imgs/"+true_class+"/"+file_hash+'.exe.png')
 
-    statement = "SELECT * FROM known WHERE file_hash=(%s)"
-    val = (file_hash)
-    cursor.execute(statement, val) # get the rows
-    if cursor.rowcount() > 0: # if the hash already exists
-        statement = "UPDATE known SET cnt = cnt + 1 WHERE file_hash=(%s)"
-        val = (file_hash)
-        cursor.execute(statement, val)
+    statement = "SELECT * FROM known WHERE file_hash='%s'"
+    val = file_hash
+    cursor.execute(statement) # get the rows
+    if cursor.rowcount > 0: # if the hash already exists
+        statement = "UPDATE known SET cnt = cnt + 1 WHERE file_hash='%s'"
+        val = file_hash
+        cursor.execute(statement)
     else: # if the hash is new
         statement = "INSERT INTO known (file_hash, label) VALUES (%s, %s)"
         val = (file_hash, class_) # make sure this follows the format for the lable ENUM

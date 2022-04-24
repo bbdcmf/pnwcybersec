@@ -6,6 +6,7 @@ from pathlib import Path
 from io import BytesIO
 import sys, uvicorn, aiohttp, asyncio, hashlib, torch
 import PIL.Image as Image
+import mysql.connector
 
 async def get_bytes(url):
     async with aiohttp.ClientSession() as session:
@@ -13,11 +14,19 @@ async def get_bytes(url):
             return await response.read()
 
 
-app = Starlette()
 PARENT_PATH = './www/' # we might have to play with this, escepially if you start in www
+app = Starlette()
 
 learn = load_learner(PARENT_PATH+'../ai/models/3-21-22-resnet50-train2-pretrained-epoch_50-bs-32-98.21%.pkl') # uses the folder of your console
 
+db = mysql.connector.connect(
+    host="localhost",
+    user="yourusername",
+    password="yourpassword",
+    database="db"
+)
+
+cursor = db.cursor()
 
 @app.route("/upload", methods=["POST"])
 async def upload(request):
@@ -48,8 +57,21 @@ def predict_image_from_bytes(bytes, true_class):
     img = Image.fromarray(g)
     file_hash = hashlib.sha256(bytes).hexdigest()
     img.save(PARENT_PATH+"imgs/"+true_class+"/"+file_hash+'.exe.png')
-    class_,predictions, losses = learn.predict(PARENT_PATH+"imgs/"+true_class+"/"+file_hash+'.exe.png')
-    return JSONResponse({
+    class_, predictions, losses = learn.predict(PARENT_PATH+"imgs/"+true_class+"/"+file_hash+'.exe.png')
+
+    statement = "SELECT * FROM known"
+    cursor.execute(statement)
+    if cursor.rowcount() > 0:
+        statement = "UPDATE known SET cnt = cnt + 1 WHERE file_hash=(%s)"
+        val = (file_hash)
+        cursor.execute(statement, val)
+    else:
+        statement = "INSERT INTO known (file_hash, label) VALUES (%s, %s)"
+        val = (file_hash, class_) # make sure this follows the format for the lable ENUM
+        cursor.execute(statement, val)
+    db.commit()
+
+    return JSONResponse({ # maybe also return the NEW count here
         "Prediction": class_,
         "Probabilities": sorted(
             zip(['goodware','malware'], map(float, losses)),

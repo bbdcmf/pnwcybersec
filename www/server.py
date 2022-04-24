@@ -14,7 +14,7 @@ async def get_bytes(url):
             return await response.read()
 
 
-PARENT_PATH = './www/' # we might have to play with this, escepially if you start in www
+PARENT_PATH = '' # we might have to play with this, escepially if you start in www
 app = Starlette()
 
 learn = load_learner(PARENT_PATH+'../ai/models/3-21-22-resnet50-train2-pretrained-epoch_50-bs-32-98.21%.pkl') # uses the folder of your console
@@ -61,53 +61,130 @@ def predict_image_from_bytes(bytes, true_class):
     file_hash = hashlib.sha256(bytes).hexdigest()
     img.save(PARENT_PATH+"imgs/"+true_class+"/"+file_hash+'.exe.png')
     class_, predictions, losses = learn.predict(PARENT_PATH+"imgs/"+true_class+"/"+file_hash+'.exe.png')
-
-    statement = "SELECT * FROM known WHERE file_hash='%s'"
-    val = file_hash
-    cursor.execute(statement) # get the rows
+    probs = sorted(zip(['goodware','malware'], map(float, losses)),key=lambda p: p[1],reverse=True)
+    
+    cursor.execute("SELECT * FROM known WHERE file_hash=%s", [file_hash]) # get the rows
     if cursor.rowcount > 0: # if the hash already exists
-        statement = "UPDATE known SET cnt = cnt + 1 WHERE file_hash='%s'"
-        val = file_hash
-        cursor.execute(statement)
+        cursor.execute("UPDATE known SET cnt = cnt + 1 WHERE file_hash=%s", [file_hash])
     else: # if the hash is new
-        statement = "INSERT INTO known (file_hash, label) VALUES (%s, %s)"
-        val = (file_hash, class_) # make sure this follows the format for the lable ENUM
-        cursor.execute(statement, val)
+        cursor.execute("INSERT INTO known (file_hash, label) VALUES (%s, %s)", [file_hash, class_])# make sure this follows the format for the lable ENUM
     db.commit()
+    
 
-    return JSONResponse({ # maybe also return the NEW count here
-        "Prediction": class_,
-        "Probabilities": sorted(
-            zip(['goodware','malware'], map(float, losses)),
-            key=lambda p: p[1],
-            reverse=True
-        )
-    })
+    return HTMLResponse(
+    """
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Malware Detection with Machine Learning</title>
+    </head>
+    <script>
+        function dropHandler(ev) {
+        console.log('File(s) dropped');
+            // Prevent default behavior (Prevent file from being opened)
+            ev.preventDefault();
+
+            if (ev.dataTransfer.items) {
+                // Use DataTransferItemList interface to access the file(s)
+                for (var i = 0; i < ev.dataTransfer.items.length; i++) {
+                    // If dropped items aren't files, reject them
+                    if (ev.dataTransfer.items[i].kind === 'file') {
+                        var file = ev.dataTransfer.items[i].getAsFile();
+                        console.log('... file[' + i + '].name = ' + file.name);
+                        let fileInput = document.querySelector('input');
+                        fileInput.files = ev.dataTransfer.files;
+                    }
+                }
+            } else {
+                // Use DataTransfer interface to access the file(s)
+                for (var i = 0; i < ev.dataTransfer.files.length; i++) {
+                    console.log('... file[' + i + '].name = ' + ev.dataTransfer.files[i].name);
+                }
+            }
+        }
+
+        function dragOverHandler(ev) {
+            console.log('File(s) in drop zone');
+
+            // Prevent default behavior (Prevent file from being opened)
+            ev.preventDefault();
+        }
+    </script>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 10px;
+        }
+        
+        #drop_zone {
+            border: 5px solid red;
+            width:  200px;
+            height: 100px;
+            text-align: center;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-gap: 20px;
+        }
+        .content {
+            margin: 2em;
+        }
+        
+    </style>
+    <header style="text-align: center;">
+        <h1>Malware Detection with Machine Learning!!!!1</h1>
+    </header>
+    <body>
+        <div class="container">
+            <div class="content">
+                <form action="/upload" method="post" enctype="multipart/form-data">
+                    Is the program goodware or malware:
+                    <select id="class_true" name="class_true">
+                        <option value="unknown">Unknown</option>
+                        <option value="goodware">Goodware</option>
+                        <option value="malware">Malware</option>
+                    </select><br/>
+                    Select a program to upload:
+                    <input type="file" name="file">
+                    <div id="drop_zone" name="file-drop" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
+                        <p>Or drag it here</p>
+                    </div>
+                    <input type="submit" value="Predict">
+                </form>
+                Or submit a URL:
+                <form action="/classify-url" method="get">
+                    <input type="url" name="url">
+                    <input type="submit" value="Fetch and analyze image">
+                </form>
+            </div>
+            <div class="content">
+                <h2>Results</h2>
+                <h3>Prediction:</h3><p>"""+ probs[0][0] + """
+                </p><h3>Probabilities:</h3>
+                <table><tr><th>""" + probs[0][0] + """</th><td>""" + str(round(probs[0][1], 4)*100) + """%
+                </td></tr><tr><th>""" + probs[1][0] + """</th><td>""" + str(round(probs[1][1], 4)*100) + """%
+                </td></tr></table>
+            </div>
+        </div>
+    </body>
+    <footer style="position: absolute; bottom: 0; width: 100%; height: 2.5rem;">
+        <p>Created by: <a href="http://www.github.com/bbdcmf" target="_blank">Ryan Frederick</a> & <a href="http://www.github.com/JoeyShapiro" target="_blank">Joseph Shaprio</a></p>
+        <p>With the advising of Ricardo Calix Ph.D.</p>
+    </footer>
+    
+    """)
 
 
 @app.route("/")
 def form(request):
     return HTMLResponse(open(PARENT_PATH+'views/index.py').read()) # Currently selecting if the program being uploaded is malware or goodware only work if the user is uploading from their computer, gotta figure out how to format it so when someone upload from a link they can still select if its malware or goodware
-    # return HTMLResponse(
-    # """
-    #     <h3>Malware Detection with Machine Learning<h3>
-    #     <form action="/upload" method="post" enctype="multipart/form-data">
-    #         Is the program goodware or malware:
-    #         <select id="class_true" name="class_true">
-    #             <option value="unknown">Unknown</option>
-    #             <option value="goodware">Goodware</option>
-    #             <option value="malware">Malware</option>
-    #         </select><br/>
-    #         Select program to upload:
-    #         <input type="file" name="file">
-    #         <input type="submit" value="Predict">
-    #     </form>
-    #     Or submit a URL:
-    #     <form action="/classify-url" method="get">
-    #         <input type="url" name="url">
-    #         <input type="submit" value="Fetch and analyze image">
-    #     </form>
-    # """)
 
 
 @app.route("/form")

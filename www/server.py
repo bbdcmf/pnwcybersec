@@ -19,12 +19,15 @@ app = Starlette()
 
 learn = load_learner(PARENT_PATH+'../ai/models/3-21-22-resnet50-train2-pretrained-epoch_50-bs-32-98.21%.pkl') # uses the folder of your console
 
-db = mysql.connector.connect(
-    host="localhost",
-    user="yourusername",
-    password="yourpassword",
-    database="db"
-)
+with open(PARENT_PATH+'secret.json') as s:
+    print('Starting mysql with secret.json')
+    secret = json.load(s)
+    db = mysql.connector.connect(
+        host=secret['host'],
+        user=secret['user'],
+        password=secret['password'],
+        database=secret['database']
+    )
 
 cursor = db.cursor()
 

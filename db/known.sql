@@ -1,7 +1,8 @@
 create table known
 (
     file_hash  varchar(256)                 not null,
-    label ENUM ('Malware', 'Goodware') not null,
+    label_pred ENUM ('Malware', 'Goodware') not null,
+    label_true ENUM('Malware', 'Goodware', 'Unknown') default 'Unknown' not null,
     cnt   int default 0                not null,
     constraint known_pk
         primary key (file_hash)

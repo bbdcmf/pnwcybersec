@@ -67,10 +67,15 @@ def predict_image_from_bytes(bytes, true_class):
     if cursor.rowcount > 0: # if the hash already exists
         cursor.execute("UPDATE known SET cnt = cnt + 1 WHERE file_hash=%s", [file_hash])
     else: # if the hash is new
-        cursor.execute("INSERT INTO known (file_hash, label) VALUES (%s, %s)", [file_hash, class_])# make sure this follows the format for the lable ENUM
+        cursor.execute("INSERT INTO known (file_hash, label_pred, label_true) VALUES (%s, %s, %s)", [file_hash, class_, true_class])# make sure this follows the format for the lable ENUM
     db.commit()
     
-
+    cursor.execute("SELECT file_hash, cnt FROM known ORDER BY (cnt) DESC LIMIT 5")
+    results = cursor.fetchall()
+    table = """<table style="margin: auto"><tr><th>File</th><th>Count</th></tr>"""
+    for result in results:
+        table = table + """<tr><td>""" + str(result[0]) + """</td><td>""" + str(result[1]) + """</td></tr>"""
+    table = table + """</table>"""
     return HTMLResponse(
     """
     <head>
@@ -174,6 +179,8 @@ def predict_image_from_bytes(bytes, true_class):
                 </td></tr></table>
             </div>
         </div>
+        """ + table + """
+        		
     </body>
     <footer style="position: absolute; bottom: 0; width: 100%; height: 2.5rem;">
         <p>Created by: <a href="http://www.github.com/bbdcmf" target="_blank">Ryan Frederick</a> & <a href="http://www.github.com/JoeyShapiro" target="_blank">Joseph Shaprio</a></p>

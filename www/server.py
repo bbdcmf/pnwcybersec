@@ -83,7 +83,10 @@ def predict_image_from_bytes(bytes, true_class, name):
     results = cursor.fetchall()
     table = """<table style="margin: auto"><tr><th>File</th><th>Count</th></tr>"""
     for result in results:
-        table = table + """<tr><td>""" + str(result[0]) + """</td><td>""" + str(result[1]) + """</td></tr>"""
+        data_color = 'black'
+        if str(result[0]) == file_hash:
+            data_color = 'darkgoldenrod'
+        table = table + """<tr style='color:""" + data_color + """;'><td>""" + str(result[0]) + """</td><td>""" + str(result[1]) + """</td></tr>"""
     table = table + """</table>"""
 
     cursor.execute("SELECT cnt FROM known WHERE file_hash=%s", [file_hash])

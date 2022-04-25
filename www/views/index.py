@@ -42,7 +42,12 @@
 
             // Prevent default behavior (Prevent file from being opened)
             ev.preventDefault();
-        }
+        }    
+        
+        function change_url_class() {
+            document.getElementById("url_class_true").value = document.getElementById("class_true").value;
+                    }
+        
     </script>
     <style>
         #drop_zone {
@@ -70,7 +75,7 @@
             <div class="content">
                 <form action="/upload" method="post" enctype="multipart/form-data">
                     Is the program goodware or malware:
-                    <select id="class_true" name="class_true">
+                    <select id="class_true" name="class_true" onchange="change_url_class()">
                         <option value="unknown">Unknown</option>
                         <option value="goodware">Goodware</option>
                         <option value="malware">Malware</option>
@@ -86,6 +91,7 @@
                 <form action="/classify-url" method="get">
                     <input type="url" name="url">
                     <input type="submit" value="Fetch and analyze image">
+                    <input type="hidden" value="Unknown" id="url_class_true" name="url_class_true">
                 </form>
             </div>
             <div class="content">

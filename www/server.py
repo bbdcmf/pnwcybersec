@@ -42,7 +42,9 @@ async def upload(request):
 @app.route("/classify-url", methods=["GET"])
 async def classify_url(request):
     bytes = await get_bytes(request.query_params["url"])
-    return predict_image_from_bytes(bytes)
+    data = await request.form()
+    true_class = request.query_params["url_class_true"]
+    return predict_image_from_bytes(bytes, true_class)
 
 
 def predict_image_from_bytes(bytes, true_class):
@@ -115,6 +117,10 @@ def predict_image_from_bytes(bytes, true_class):
             // Prevent default behavior (Prevent file from being opened)
             ev.preventDefault();
         }
+        
+        function change_url_class() {
+            document.getElementById("url_class_true").value = document.getElementById("class_true").value;
+        }
     </script>
     <style>
     	
@@ -168,6 +174,7 @@ def predict_image_from_bytes(bytes, true_class):
                 <form action="/classify-url" method="get">
                     <input type="url" name="url">
                     <input type="submit" value="Fetch and analyze image">
+                    <input type="hidden" value="" id="url_class_true" name="url_class_true">
                 </form>
             </div>
             <div class="content">

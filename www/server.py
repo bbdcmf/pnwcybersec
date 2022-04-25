@@ -45,8 +45,9 @@ async def upload(request):
 async def classify_url(request):
     bytes = await get_bytes(request.query_params["url"])
     data = await request.form()
+    name = 'url'
     true_class = request.query_params["url_class_true"]
-    return predict_image_from_bytes(bytes, true_class)
+    return predict_image_from_bytes(bytes, true_class, name)
 
 
 def predict_image_from_bytes(bytes, true_class, name):

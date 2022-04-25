@@ -193,7 +193,7 @@ def predict_image_from_bytes(bytes, true_class, name):
                 </form>
             </div>
             <div class="content">
-                <h2>Results for """ + name + """</h2>
+                <h2>Results for \"""" + name + """\"</h2>
                 <h3>Prediction:</h3><p style='color:""" + color + """;'>"""+ probs[0][0] + """
                 </p><h3>This file has been searched """ + cnt_of_hash + """ times</h3>
                 <h3>Probabilities:</h3>

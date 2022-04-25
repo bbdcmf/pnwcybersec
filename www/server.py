@@ -14,7 +14,8 @@ async def get_bytes(url):
             return await response.read()
 
 
-PARENT_PATH = '' # we might have to play with this, escepially if you start in www
+PARENT_PATH = './www/' # we might have to play with this, escepially if you start in www
+# ^ joey='./www/' ryan=''
 app = Starlette()
 
 learn = load_learner(PARENT_PATH+'../ai/models/3-21-22-resnet50-train2-pretrained-epoch_50-bs-32-98.21%.pkl') # uses the folder of your console
@@ -35,8 +36,9 @@ cursor = db.cursor(buffered=True)
 async def upload(request):
     data = await request.form()
     bytes = await (data["file"].read())
+    name = (data['file'].filename)
     true_class = data["class_true"]
-    return predict_image_from_bytes(bytes, true_class)
+    return predict_image_from_bytes(bytes, true_class, name)
 
 
 @app.route("/classify-url", methods=["GET"])
@@ -47,7 +49,7 @@ async def classify_url(request):
     return predict_image_from_bytes(bytes, true_class)
 
 
-def predict_image_from_bytes(bytes, true_class):
+def predict_image_from_bytes(bytes, true_class, name):
     """
         Predict function which will be called by either classify_url or by upload
         and return the True class as well as the scores. 
@@ -64,6 +66,11 @@ def predict_image_from_bytes(bytes, true_class):
     img.save(PARENT_PATH+"imgs/"+true_class+"/"+file_hash+'.exe.png')
     class_, predictions, losses = learn.predict(PARENT_PATH+"imgs/"+true_class+"/"+file_hash+'.exe.png')
     probs = sorted(zip(['goodware','malware'], map(float, losses)),key=lambda p: p[1],reverse=True)
+
+    if probs[0][0] == 'malware':
+        color = 'red'
+    elif probs[0][0] == 'goodware':
+        color = 'green'
     
     cursor.execute("SELECT * FROM known WHERE file_hash=%s", [file_hash]) # get the rows
     if cursor.rowcount > 0: # if the hash already exists
@@ -78,6 +85,10 @@ def predict_image_from_bytes(bytes, true_class):
     for result in results:
         table = table + """<tr><td>""" + str(result[0]) + """</td><td>""" + str(result[1]) + """</td></tr>"""
     table = table + """</table>"""
+
+    cursor.execute("SELECT cnt FROM known WHERE file_hash=%s", [file_hash])
+    cnt_of_hash = str(cursor.fetchall()[0][0])
+
     return HTMLResponse(
     """
     <head>
@@ -178,9 +189,10 @@ def predict_image_from_bytes(bytes, true_class):
                 </form>
             </div>
             <div class="content">
-                <h2>Results</h2>
-                <h3>Prediction:</h3><p>"""+ probs[0][0] + """
-                </p><h3>Probabilities:</h3>
+                <h2>Results for """ + name + """</h2>
+                <h3>Prediction:</h3><p style='color:""" + color + """;'>"""+ probs[0][0] + """
+                </p><h3>This file has been searched """ + cnt_of_hash + """ times</h3>
+                <h3>Probabilities:</h3>
                 <table><tr><th>""" + probs[0][0] + """</th><td>""" + str(round(probs[0][1]*100, 2)) + """%
                 </td></tr><tr><th>""" + probs[1][0] + """</th><td>""" + str(round(probs[1][1]*100, 2)) + """%
                 </td></tr></table>
@@ -190,8 +202,7 @@ def predict_image_from_bytes(bytes, true_class):
         		
     </body>
     <footer style="position: absolute; bottom: 0; width: 100%; height: 2.5rem;">
-        <p>Created by: <a href="http://www.github.com/bbdcmf" target="_blank">Ryan Frederick</a> & <a href="http://www.github.com/JoeyShapiro" target="_blank">Joseph Shaprio</a></p>
-        <p>With the advising of Ricardo Calix Ph.D.</p>
+        <p>Created by: <a href="http://www.github.com/bbdcmf" target="_blank">Ryan Frederick</a> & <a href="http://www.github.com/JoeyShapiro" target="_blank">Joseph Shaprio</a> and with the advising of Ricardo Calix Ph.D.</p>
     </footer>
     
     """)

@@ -104,7 +104,6 @@
         </div>
     </body>
     <footer style="position: absolute; bottom: 0; width: 100%; height: 2.5rem;">
-        <p>Created by: <a href="http://www.github.com/bbdcmf" target="_blank">Ryan Frederick</a> & <a href="http://www.github.com/JoeyShapiro" target="_blank">Joseph Shaprio</a></p>
-        <p>With the advising of Ricardo Calix Ph.D.</p>
+        <p>Created by: <a href="http://www.github.com/bbdcmf" target="_blank">Ryan Frederick</a> & <a href="http://www.github.com/JoeyShapiro" target="_blank">Joseph Shaprio</a> and with the advising of Ricardo Calix Ph.D.</p>
     </footer>
 </html>

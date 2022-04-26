@@ -14,7 +14,11 @@ async def get_bytes(url):
             return await response.read()
 
 
-PARENT_PATH = '' # we might have to play with this, escepially if you start in www
+isJoey = True
+if isJoey:
+    PARENT_PATH = './www/' # we might have to play with this, escepially if you start in www
+else:
+    PARENT_PATH = ''
 # ^ joey='./www/' ryan=''
 app = Starlette()
 

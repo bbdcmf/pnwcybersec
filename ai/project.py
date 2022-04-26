@@ -14,9 +14,14 @@ torch.cuda.empty_cache() # Empty PyTorch cache
 #pathlib.PosixPath = pathlib.WindowsPath
 #####################################################
 
-path = '/run/media/bbdcmf/T7/ITS490-Project/' # Path to the project folder
-exportPath = path+'github/ai/models/3-21-22-resnet50-train2-pretrained-epoch_50-bs-32-98.21%.pkl' # If training, this is the path to where your model will be exported. If loading a trained model, this is the path to that model.
+isRyan = False
 
+if isRyan:
+    path = '/run/media/bbdcmf/T7/ITS490-Project/' # Path to the project folder
+    exportPath = path+'github/ai/models/3-21-22-resnet50-train2-pretrained-epoch_50-bs-32-98.21%.pkl' # If training, this is the path to where your model will be exported. If loading a trained model, this is the path to that model.
+else: # if Joey
+    path = './'
+    exportPath = path+'ai/models/3-21-22-resnet50-train2-pretrained-epoch_50-bs-32-98.21%.pkl'
 #####################################***Training a new model***#####################################
 #
 #trainPath = path+'dataset/BODMAS_train/'

@@ -26,7 +26,7 @@ def convertToImage(src, dst):
             width = int(ln**0.5)
             imgByteArr = bytearray(f.read()) # Copy exe data to bytearray
         g = np.reshape(imgByteArr[:width * width], (width, width)) # Reshape bytearray so it is square
-        g = np.uint8(g) # Ensure data is between 0 and 255, where 0=black and 1=white
+        g = np.uint8(g) # Ensure data is between 0 and 255, where 0=black and 255=white
         img = Image.fromarray(g)
         img.save(dstPath)
     print('Files converted successfully')

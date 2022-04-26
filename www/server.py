@@ -104,16 +104,15 @@ def predict_image_from_bytes(bytes, true_class, name):
     <style>""" + styles + """</style>""" + body + """
             <div class="content">
                 <h2 style="font-size: 20px">Results for \"""" + name + """\"</h2>
-                <h3>Prediction:</h3><p style='color:""" + color + """;'>"""+ probs[0][0] + """
-                </p><h3>This file has been searched """ + cnt_of_hash + """ times</h3>
+                <h3>Prediction:</h3><p style='color:""" + color + """;'>"""+ probs[0][0] + """</p>
                 <h3>Probabilities:</h3>
                 <table class="probs_table"><tr><th style="border: 0; text-align: left;">""" + probs[0][0] + """</th><td style="border: 0; text-align: right;">""" + str(round(probs[0][1]*100, 2)) + """%
                 </td></tr><tr><th style="border: 0; text-align: left;">""" + probs[1][0] + """</th><td style="border: 0; text-align: right;">""" + str(round(probs[1][1]*100, 2)) + """%
                 </td></tr></table>
             </div>
         </div>
-        """ + table + """
-        		
+        <h3 style="text-align:center">This file has been searched """ + cnt_of_hash + """ times</h3>	
+        """ + table + """	
     </body>
     <footer style="position: absolute; bottom: 0; width: 100%; height: 2.5rem;">
         <p>Created by: <a href="http://www.github.com/bbdcmf" target="_blank">Ryan Frederick</a> & <a href="http://www.github.com/JoeyShapiro" target="_blank">Joseph Shaprio</a> and with the advising of Ricardo Calix Ph.D.</p>

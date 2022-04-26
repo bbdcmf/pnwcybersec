@@ -1,0 +1,38 @@
+<header style="text-align: center;">
+	<h1>Malware Detection with Machine Learning!!!!1</h1>
+</header>
+<body class="page_body">
+	<div class="container">
+		<div class="content">
+			<form action="/upload" method="post" enctype="multipart/form-data">
+				Is the program goodware or malware:
+				<select id="class_true" name="class_true" onchange="change_url_class()">
+					<option value="unknown">Unknown</option>
+					<option value="goodware">Goodware</option>
+					<option value="malware">Malware</option>
+				</select><br/>
+				<div id="tabs">
+					<ul>
+						<li><a href="#tabs-1">File</a></li>
+						<li><a href="#tabs-2">URL</a></li>
+					</ul>
+					<div id="tabs-1">
+						Select a program to upload:
+						<input type="file" name="file"><br><br>
+						<div id="drop_zone" name="file-drop" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
+							<p>Or drag it here</p>
+						</div><br/>
+						<input type="submit" value="Predict" style="padding: 5px;">
+					</div>
+				</form><br><br>
+					<div id="tabs-2">
+						Submit a URL:<br><br>
+						<form action="/classify-url" method="get">
+							<input type="url" name="url">
+							<input type="submit" value="Fetch and analyze image">
+							<input type="hidden" value="unknown" id="url_class_true" name="url_class_true">
+						</form>
+					</div>
+				
+				</div>
+		</div>

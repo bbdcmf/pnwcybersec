@@ -1,0 +1,46 @@
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=1000">
+        <title>Malware Detection with Machine Learning</title>
+        <script type="text/javascript" src="https://code.jquery.com/jquery-1.9.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+    <script>
+        function dropHandler(ev) {
+        console.log('File(s) dropped');
+            // Prevent default behavior (Prevent file from being opened)
+            ev.preventDefault();
+
+            if (ev.dataTransfer.items) {
+                // Use DataTransferItemList interface to access the file(s)
+                for (var i = 0; i < ev.dataTransfer.items.length; i++) {
+                    // If dropped items aren't files, reject them
+                    if (ev.dataTransfer.items[i].kind === 'file') {
+                        var file = ev.dataTransfer.items[i].getAsFile();
+                        console.log('... file[' + i + '].name = ' + file.name);
+                        let fileInput = document.querySelector('input');
+                        fileInput.files = ev.dataTransfer.files;
+                    }
+                }
+            } else {
+                // Use DataTransfer interface to access the file(s)
+                for (var i = 0; i < ev.dataTransfer.files.length; i++) {
+                    console.log('... file[' + i + '].name = ' + ev.dataTransfer.files[i].name);
+                }
+            }
+        }
+
+        function dragOverHandler(ev) {
+            console.log('File(s) in drop zone');
+
+            // Prevent default behavior (Prevent file from being opened)
+     	   ev.preventDefault();
+        }    
+        
+ 	   	function change_url_class() {
+   	    	document.getElementById("url_class_true").value = document.getElementById("class_true").value;
+    	}
+     	$(function() {
+			$("#tabs").tabs({
+			});
+		});
+	</script>

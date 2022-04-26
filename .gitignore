@@ -1,5 +1,6 @@
 knn_classify.py
 good.txt
+.DS_Store
 __pycache__/
 ai/__pycache__/
 www/www/__pycache__/

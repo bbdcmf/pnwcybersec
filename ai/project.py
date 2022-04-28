@@ -19,23 +19,34 @@ exportPath = path+'github/ai/models/3-21-22-resnet50-train2-pretrained-epoch_50-
 
 #####################################***Training a new model***#####################################
 #
-#trainPath = path+'dataset/BODMAS_train/'
-#dls = ic.loadData(trainPath, valid_pct=0.2, bs=32)
+#trainPath = '/home/bbdcmf/Downloads/archive(1)/images/train/'
+#dls = ic.loadData(trainPath, valid_pct=0.2, bs=32, get_y=parent_label)
 #dls.valid.show_batch(max_n=8, nrows=2)
 #plt.show()
-#model = ic.trainModel(dls, resnet50, path=exportPath, epoch_ct=50, metrics=[error_rate, accuracy], pretrained=False)
+#model = ic.trainModel(dls, resnet50, path=exportPath, epoch_ct=10, metrics=[error_rate, accuracy], pretrained=True)
 #ic.confusionMatrix(isModel=True, model=model)
 #
 ####################################################################################################
 
 ##################################***Loading a Trained Model***##################################
 #
-model = ic.loadModel(exportPath, cpu=True)
-
+model = ic.loadModel(exportPath, cpu=False)
+#
 #model = ic.getBestModel(cpu=False)
 #
 #################################################################################################
 
+'''
+If using default options, your file struction should look like this:
+path/to/dataset/:
+				path/to/dataset/label1/:
+										path/to/dataset/label1/label1file1
+										path/to/dataset/label1/label1file2 ...
+				path/to/dataset/label2:
+										path/to/dataset/label2label2file1
+										path/to/dataset/label2label2file2 ...
+				...
+'''
 answered = False
 while not answered:
     should_convert = input("Does your test set need to be converted to images?[y/n] ")

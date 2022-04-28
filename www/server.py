@@ -62,7 +62,7 @@ def predict_image_from_bytes(bytes, true_class, name):
     width = int(ln**0.5)
     g = np.reshape(imgByteArr[:width * width], (width, width)) # Reshape bytearray so it is square
     g = np.uint8(g) # Ensure data is between 0 and 255, where 0=black and 1=white
-    img = Image.fromarray(g)
+    img = Image.fromarray(g, mode="L")
     file_hash = hashlib.sha256(bytes).hexdigest()
     img.save(PARENT_PATH+"imgs/"+true_class+"/"+file_hash+'.exe.png')
     class_, predictions, losses = learn.predict(PARENT_PATH+"imgs/"+true_class+"/"+file_hash+'.exe.png')

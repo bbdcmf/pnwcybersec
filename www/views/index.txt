@@ -263,13 +263,31 @@
         }
 
         .content {
-            margin: 2em;
-            margin: 0 auto;
             display: flex;
             justify-content: center;
             align-items: center;
             flex-direction: column;
+			margin: 40vh auto 0;
+			transform: translateY(-60%);
         }
+
+		.btn{
+			-webkit-border-radius: 5px;
+  			-moz-border-radius: 5px;
+  			border-radius: 5px;
+  			background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.16, rgb(207, 207, 207)), color-stop(0.79, rgb(252, 252, 252)));
+  			background-image: -moz-linear-gradient(center bottom, rgb(207, 207, 207) 16%, rgb(252, 252, 252) 79%);
+  			background-image: linear-gradient(to top, rgb(207, 207, 207) 16%, rgb(252, 252, 252) 79%); 
+  			padding: 3px;
+  			border: 1px solid #000;
+  			color: #333333;
+  			text-decoration: none;
+			font-size: 0.9em;
+		}
+		.btn:hover{
+			background-image: none;
+			background-color: lightgray;
+		}
         
     </style>
     <header style="text-align: center;">
@@ -291,7 +309,8 @@
                 		</ul>
                 		<div id="tabs-1">
                     		Select a program to upload:
-                    		<input type="file" name="file"><br><br>
+							<label for="file" class="btn">Browse...</label>
+                    		<input type="file" name="file" id="file" style="display: none;"><br><br>
                     		<div id="drop_zone" name="file-drop" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
                       	 		<p>Or drag it here</p>
                     		</div><br/>

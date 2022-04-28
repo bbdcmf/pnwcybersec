@@ -1,13 +1,15 @@
 import os, warnings
 import numpy as np
 import PIL.Image as Image
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
+from PIL import Image, ImageFile
 from colorama import Fore
 from fastai.vision.all import *
 from fastai.metrics import accuracy
 from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score, confusion_matrix
 
 Image.MAX_IMAGE_PIXELS = 933120000 # Change the max pixels to avoid warnings
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 '''
 src = Path to the folder containing the files you want to become images
@@ -27,7 +29,7 @@ def convertToImage(src, dst):
             imgByteArr = bytearray(f.read()) # Copy exe data to bytearray
         g = np.reshape(imgByteArr[:width * width], (width, width)) # Reshape bytearray so it is square
         g = np.uint8(g) # Ensure data is between 0 and 255, where 0=black and 255=white
-        img = Image.fromarray(g)
+        img = Image.fromarray(g, mode='L')
         img.save(dstPath)
     print('Files converted successfully')
     
@@ -48,7 +50,7 @@ def loadData(trainPath, valid_pct, bs=None, get_items=get_image_files, get_y=par
         splitter = RandomSplitter(valid_pct=valid_pct, seed=24),
         get_y = get_y,
         item_tfms = item_tfms,
-        batch_tfms= batch_tfms
+        batch_tfms = batch_tfms
     )
     dls = loader.dataloaders(trainPath, bs=bs)
     return dls
@@ -124,10 +126,10 @@ def predict(model, testPath, labeled=False, pos_lbl=None, neg_lbl=None, threshol
     path = Path(testPath)
     dirs = os.listdir(path)
     files = get_image_files(Path(testPath))
-    malware_test = []
-    malware_pred = []
-    goodware_test = []
-    goodware_pred = []
+    pos_test = []
+    pos_pred = []
+    neg_test = []
+    neg_pred = []
     y_test = []
     y_pred = []
     widths = []
@@ -151,18 +153,22 @@ def predict(model, testPath, labeled=False, pos_lbl=None, neg_lbl=None, threshol
             print(f"Item: {fmtItem.ljust(72)} | Actual: {Fore.GREEN+actual.ljust(8)+Fore.WHITE} | Prediction: {Fore.GREEN+prediction.ljust(8)+Fore.WHITE} | Probability: {probabilities[prediction_index]:.04f} {warning}")
         else: # Print red if incorrect
             print(f"Item: {fmtItem.ljust(72)} | Actual: {Fore.RED+actual.ljust(8)+Fore.WHITE} | Prediction: {Fore.RED+prediction.ljust(8)+Fore.WHITE} | Probability: {probabilities[prediction_index]:.04f} {warning}")
-        if(actual == pos_lbl): # If the file is malware
-            malware_test.append(actual)
-            malware_pred.append(prediction)
-        elif(actual == neg_lbl): #If the file is goodware
-            goodware_test.append(actual)
-            goodware_pred.append(prediction)
         y_test.append(actual)
         y_pred.append(prediction)
+        
+        # If the data is binary
+        if(pos_lbl is not None and neg_lbl is not None):
+            if(actual == pos_lbl): # If the file is malware
+                pos_test.append(actual)
+                pos_pred.append(prediction)
+            elif(actual == neg_lbl): #If the file is goodware
+                neg_test.append(actual)
+                neg_pred.append(prediction)
+        
     print(
         "-"*25,
         "\n"+Fore.YELLOW+"Image Width Statistics:",
-        "\nCnt:", len(widths),
+        "\n\nCnt:", len(widths),
         "\nMin:", min(widths),
         "\nMax:", max(widths),
         "\nAvg:", np.average(widths),
@@ -172,22 +178,45 @@ def predict(model, testPath, labeled=False, pos_lbl=None, neg_lbl=None, threshol
     if(labeled):
         with warnings.catch_warnings():
             warnings.simplefilter(action='ignore')
-            print(
-                Fore.WHITE+"-"*25,
-                "\n"+Fore.CYAN+"Overall Performance Metrics:",
-                "\nAccuracy:", round(accuracy_score(y_test, y_pred), 4),
-                "\nPrecision:", round(precision_score(y_test, y_pred, pos_label=pos_lbl), 4),
-                "\nRecall:", round(recall_score(y_test, y_pred, pos_label=pos_lbl), 4),
-                "\nF1:", round(f1_score(y_test, y_pred, pos_label=pos_lbl), 4),
-                "\n"+Fore.WHITE+"-"*25,
-                # Precision and F1 Score removed below because these statistics don't include false positives, making precision and f1 useless
-                "\n"+Fore.RED+"Malware Performance Metrics:",
-                "\nAccuracy:", round(accuracy_score(malware_test, malware_pred), 4),
-                "\nRecall:", round(recall_score(malware_test, malware_pred, pos_label=pos_lbl), 4),
-                "\n"+Fore.WHITE+"-"*25,
-                "\n"+Fore.GREEN+"Goodware Performance Metrics:",
-                "\nAccuracy:", round(accuracy_score(goodware_test, goodware_pred), 4),
-                "\nRecall:", round(recall_score(goodware_test, goodware_pred, pos_label=neg_lbl), 4),
-                "\n"+Fore.WHITE+"-"*25
-            )
-            confusionMatrix(isModel=False, y_true=y_test, y_pred=y_pred, pos_label=pos_lbl, neg_label=neg_lbl)
+            labels = []
+            for label in y_test:
+                if(label not in labels):
+                    labels.append(label)
+            # If multiclass data
+            if(len(labels) > 2):
+                print(
+                    Fore.WHITE+"-"*25,
+                    "\n"+Fore.CYAN+"Overall Performance Metrics:",
+                    "\nAccuracy:", round(accuracy_score(y_test, y_pred), 4),
+                    "\nPrecision:", round(precision_score(y_test, y_pred, average='macro'), 4),
+                    "\nRecall:", round(recall_score(y_test, y_pred, average='macro'), 4),
+                    "\nF1:", round(f1_score(y_test, y_pred, average='macro'), 4),
+                    "\n"+Fore.WHITE+"-"*25,
+                )
+            # If binary data
+            else:
+                # Overall Performance:
+                print(
+                    Fore.WHITE+"-"*25,
+                    "\n"+Fore.CYAN+"Overall Performance Metrics:",
+                    "\n\nAccuracy:", round(accuracy_score(y_test, y_pred), 4)
+                )
+                if(pos_lbl is not None and neg_lbl is not None):
+                    print(
+                        "Precision:", round(precision_score(y_test, y_pred, pos_label=pos_lbl), 4),
+                        "\nRecall:", round(recall_score(y_test, y_pred, pos_label=pos_lbl), 4),
+                        "\nF1:", round(f1_score(y_test, y_pred, pos_label=pos_lbl), 4),
+                        "\n"+Fore.WHITE+"-"*25,
+                        "\n"+Fore.RED+pos_lbl.capitalize()+" Performance Metrics:"
+                        "\n\nAccuracy:", round(accuracy_score(pos_test, pos_pred), 4),
+                        "\nRecall:", round(recall_score(pos_test, pos_pred, pos_label=pos_lbl), 4),
+                        "\n"+Fore.WHITE+"-"*25,
+                        "\n"+Fore.GREEN+neg_lbl.capitalize()+" Performance Metrics:",
+                        "\n\nAccuracy:", round(accuracy_score(neg_test, neg_pred), 4),
+                        "\nRecall:", round(recall_score(neg_test, neg_pred, pos_label=neg_lbl), 4)
+                    )
+                    print(Fore.WHITE+"-"*25)
+                    confusionMatrix(isModel=False, y_true=y_test, y_pred=y_pred, pos_label=pos_lbl, neg_label=neg_lbl)
+
+
+               

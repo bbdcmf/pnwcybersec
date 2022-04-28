@@ -18,7 +18,8 @@
 					</ul>
 					<div id="tabs-1">
 						Select a program to upload:
-						<input type="file" name="file"><br><br>
+						<label for="file" class="btn">Browse...</label>
+						<input type="file" name="file" id="file" style="display: none;"><br><br>
 						<div id="drop_zone" name="file-drop" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
 							<p>Or drag it here</p>
 						</div><br/>

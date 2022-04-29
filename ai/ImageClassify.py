@@ -76,7 +76,7 @@ def trainModel(dls, arch, path, epoch_ct=1, metrics=[error_rate, accuracy], pret
 exportPath = Path to the exported model
 cpu = Whether the model should use the CPU or GPU
 '''
-def loadModel(exportPath, cpu=False):
+def loadModel(exportPath, cpu=True):
     model = load_learner(exportPath, cpu)
     return model
 

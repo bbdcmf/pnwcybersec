@@ -35,7 +35,7 @@ else: # if Joey
 
 ##################################***Loading a Trained Model***##################################
 #
-model = ic.loadModel(exportPath, cpu=False)
+model = ic.loadModel(exportPath, cpu=True)
 #
 #model = ic.getBestModel(cpu=False)
 #
